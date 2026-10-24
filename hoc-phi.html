@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Học phí | Quản lý sinh viên</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="tai-chinh.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- ========== SIDEBAR ========== -->
+    <aside class="sidebar">
+      <div class="sidebar__brand">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <span>StudentHub</span>
+      </div>
+
+      <nav class="sidebar__menu">
+        <a href="index.html" class="menu-item"><i class="fa-solid fa-newspaper"></i><span>Tin tức</span></a>
+        <a href="profile.html" class="menu-item"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+        <a href="hoc-tap.html" class="menu-item"><i class="fa-solid fa-book-open"></i><span>Học tập</span></a>
+        <a href="dormitory.html" class="menu-item"><i class="fa-solid fa-building"></i><span>Ký túc xá</span></a>
+        <a href="library.html" class="menu-item"><i class="fa-solid fa-book"></i><span>Thư viện</span></a>
+        <a href="lich-hoc.html" class="menu-item"><i class="fa-solid fa-calendar-days"></i><span>Lịch học</span></a>
+        <a href="hoc-phi.html" class="menu-item active"><i class="fa-solid fa-wallet"></i><span>Học phí</span></a>
+        <a href="#" class="menu-item"><i class="fa-solid fa-comments"></i><span>Phản hồi</span></a>
+      </nav>
+
+      <div class="sidebar__footer">
+        <a href="#" class="menu-item"><i class="fa-solid fa-gear"></i><span>Cài đặt</span></a>
+        <a href="#" class="menu-item logout"><i class="fa-solid fa-right-from-bracket"></i><span>Đăng xuất</span></a>
+      </div>
+    </aside>
+
+    <!-- ========== MAIN ========== -->
+    <div class="main">
+      <header class="navbar">
+        <form class="search" role="search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="search" placeholder="Tìm kiếm sinh viên, môn học, tài liệu..." />
+        </form>
+
+        <div class="navbar__right">
+          <button class="icon-btn" aria-label="Thông báo">
+            <i class="fa-regular fa-bell"></i><span class="badge">3</span>
+          </button>
+          <button class="icon-btn" aria-label="Tin nhắn">
+            <i class="fa-regular fa-envelope"></i>
+          </button>
+          <div class="user">
+            <img src="" alt="Ảnh đại diện" class="user__avatar" />
+            <div class="user__info">
+              <span class="user__name"></span>
+              <span class="user__role"></span>
+            </div>
+            <i class="fa-solid fa-chevron-down user__caret"></i>
+          </div>
+        </div>
+      </header>
+
+      <main class="content fin">
+        <h1 class="fin-title">TÀI CHÍNH SINH VIÊN</h1>
+
+        <nav class="fin-tabs" aria-label="Phân hệ tài chính">
+          <a href="hoc-phi.html" aria-current="page"><i class="fa-solid fa-file-invoice-dollar"></i> Học phí</a>
+          <a href="thanh-toan-online.html"><i class="fa-solid fa-qrcode"></i> Thanh toán online <span class="tab-dot" id="payDot" hidden></span></a>
+        </nav>
+
+        <!-- Thông tin sinh viên -->
+        <section class="box student-bar" aria-label="Thông tin sinh viên">
+          <img id="stAvatar" src="" alt="" />
+          <dl><dt>Họ và tên</dt><dd id="stName">—</dd></dl>
+          <dl><dt>Mã sinh viên</dt><dd id="stMsv">—</dd></dl>
+          <dl><dt>Lớp</dt><dd id="stClass">—</dd></dl>
+          <dl><dt>Số điện thoại</dt><dd id="stPhone">—</dd></dl>
+          <span class="status" id="stStatus">—</span>
+        </section>
+
+        <!-- Phần 1 -->
+        <h2 class="section-label"><span>1</span> Tổng hợp dư, nợ</h2>
+        <div class="balance-grid">
+          <article class="box balance">
+            <div class="balance__icon"><i class="fa-solid fa-file-circle-exclamation"></i></div>
+            <div class="balance__body">
+              <h3>Danh sách nợ</h3>
+              <b id="debtTotal">0 đ</b>
+              <small id="debtNote">—</small>
+            </div>
+            <button type="button" class="btn-detail" data-detail="debt"><i class="fa-solid fa-list"></i> Chi tiết</button>
+          </article>
+          <article class="box balance balance--surplus">
+            <div class="balance__icon"><i class="fa-solid fa-piggy-bank"></i></div>
+            <div class="balance__body">
+              <h3>Danh sách thừa</h3>
+              <b id="surplusTotal">0 đ</b>
+              <small id="surplusNote">—</small>
+            </div>
+            <button type="button" class="btn-detail" data-detail="surplus"><i class="fa-solid fa-list"></i> Chi tiết</button>
+          </article>
+        </div>
+
+        <!-- Phần 2 -->
+        <h2 class="section-label"><span>2</span> Chi tiết quá trình</h2>
+        <div class="metric-grid">
+          <article class="box metric metric--payable">
+            <i class="fa-solid fa-file-invoice"></i>
+            <h3><i class="fa-solid fa-file-invoice"></i> Khoản phải nộp</h3>
+            <b id="mPayable">0 đ</b><small id="mPayableNote">—</small>
+          </article>
+          <article class="box metric metric--exempt">
+            <i class="fa-solid fa-hand-holding-heart"></i>
+            <h3><i class="fa-solid fa-hand-holding-heart"></i> Khoản được miễn</h3>
+            <b id="mExempt">0 đ</b><small>Miễn giảm học phí</small>
+          </article>
+          <article class="box metric metric--paid">
+            <i class="fa-solid fa-circle-check"></i>
+            <h3><i class="fa-solid fa-circle-check"></i> Khoản đã nộp</h3>
+            <b id="mPaid">0 đ</b><small id="mPaidNote">—</small>
+          </article>
+          <article class="box metric metric--withdrawn">
+            <i class="fa-solid fa-money-bill-transfer"></i>
+            <h3><i class="fa-solid fa-money-bill-transfer"></i> Khoản đã rút</h3>
+            <b id="mWithdrawn">0 đ</b><small>Hoàn trả cho sinh viên</small>
+          </article>
+        </div>
+
+        <div class="box progress-card">
+          <div class="progress-card__top">
+            <span>Tiến độ hoàn thành học phí</span>
+            <span><b id="progressText">0%</b></span>
+          </div>
+          <div class="progress" role="progressbar" id="progressBar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <span id="progressFill" style="width:0%"></span>
+          </div>
+        </div>
+
+        <!-- Phần 3 -->
+        <h2 class="section-label"><span>3</span> Thông tin hóa đơn, phiếu thu</h2>
+        <section class="box box--flush">
+          <div class="box__head">
+            <h2><i class="fa-solid fa-receipt"></i> Các khoản thu theo năm học</h2>
+            <a href="thanh-toan-online.html" class="btn btn--pay" id="payNowBtn" hidden><i class="fa-solid fa-qrcode"></i> Thanh toán ngay</a>
+          </div>
+          <div class="table-wrap">
+            <table class="fin-table">
+              <thead>
+                <tr>
+                  <th>Năm học</th>
+                  <th>Số môn × Đơn giá</th>
+                  <th class="num">Học phí môn học</th>
+                  <th class="num">Phí phụ đạo</th>
+                  <th class="num">Miễn giảm</th>
+                  <th class="num">Phải nộp</th>
+                  <th class="num">Đã nộp</th>
+                  <th class="num">Còn nợ</th>
+                  <th>Trạng thái</th>
+                  <th>Số phiếu thu</th>
+                </tr>
+              </thead>
+              <tbody id="feeBody"></tbody>
+              <tfoot id="feeFoot"></tfoot>
+            </table>
+          </div>
+        </section>
+
+        <section class="box box--flush">
+          <div class="box__head box__head--soft">
+            <h2><i class="fa-solid fa-mobile-screen-button"></i> Phiếu thu thanh toán online</h2>
+          </div>
+          <div class="table-wrap">
+            <table class="fin-table">
+              <thead>
+                <tr>
+                  <th>Số phiếu thu</th><th>Thời gian</th><th>Phương thức</th><th>Nội dung</th><th>Áp dụng cho</th><th class="num">Số tiền</th>
+                </tr>
+              </thead>
+              <tbody id="onlineBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Popup chi tiết nợ / thừa -->
+  <dialog class="modal" id="detailModal" aria-labelledby="detailTitle">
+    <form method="dialog">
+      <div class="modal__head">
+        <div class="modal__icon"><i class="fa-solid fa-list"></i></div>
+        <div><h3 id="detailTitle"></h3><p id="detailSub"></p></div>
+      </div>
+      <div class="modal__body" id="detailBody"></div>
+      <div class="modal__actions" id="detailActions"></div>
+    </form>
+  </dialog>
+
+  <script src="data/students.js"></script>
+  <script src="app.js"></script>
+  <script src="finance.js"></script>
+  <script src="hoc-phi.js"></script>
+</body>
+</html>
