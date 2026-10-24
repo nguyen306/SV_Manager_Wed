@@ -189,7 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>`;
       $("payActions").innerHTML = `
         <button type="submit" value="stay" class="btn btn--ghost">Ở lại trang này</button>
-        <a href="hoc-phi.html" class="btn btn--primary"><i class="fa-solid fa-file-invoice-dollar"></i> Xem trang Học phí</a>`;
+        <a href="${pageUrl("hoc-phi")}" class="btn btn--primary"><i class="fa-solid fa-file-invoice-dollar"></i> Xem trang Học phí</a>`;
       showToast("Thanh toán thành công!", "success");
 
       let left = REDIRECT_SECONDS;
@@ -199,7 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (el) el.textContent = `Tự động chuyển sang trang Học phí sau ${left} giây...`;
         if (left <= 0) {
           clearInterval(redirectTimer);
-          window.location.href = "hoc-phi.html";
+          window.location.href = pageUrl("hoc-phi");
         }
       }, 1000);
     }, 1600);
