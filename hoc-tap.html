@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Học tập | Quản lý sinh viên</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="hoc-tap.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- ========== SIDEBAR ========== -->
+    <aside class="sidebar">
+      <div class="sidebar__brand">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <span>StudentHub</span>
+      </div>
+
+      <nav class="sidebar__menu">
+        <a href="index.html" class="menu-item"><i class="fa-solid fa-newspaper"></i><span>Tin tức</span></a>
+        <a href="profile.html" class="menu-item"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+        <a href="hoc-tap.html" class="menu-item active"><i class="fa-solid fa-book-open"></i><span>Học tập</span></a>
+        <a href="dormitory.html" class="menu-item"><i class="fa-solid fa-building"></i><span>Ký túc xá</span></a>
+        <a href="library.html" class="menu-item"><i class="fa-solid fa-book"></i><span>Thư viện</span></a>
+        <a href="lich-hoc.html" class="menu-item"><i class="fa-solid fa-calendar-days"></i><span>Lịch học</span></a>
+        <a href="hoc-phi.html" class="menu-item"><i class="fa-solid fa-wallet"></i><span>Học phí</span></a>
+        <a href="#" class="menu-item"><i class="fa-solid fa-comments"></i><span>Phản hồi</span></a>
+      </nav>
+
+      <div class="sidebar__footer">
+        <a href="#" class="menu-item"><i class="fa-solid fa-gear"></i><span>Cài đặt</span></a>
+        <a href="#" class="menu-item logout"><i class="fa-solid fa-right-from-bracket"></i><span>Đăng xuất</span></a>
+      </div>
+    </aside>
+
+    <!-- ========== MAIN ========== -->
+    <div class="main">
+      <header class="navbar">
+        <form class="search" role="search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="search" placeholder="Tìm kiếm sinh viên, môn học, tài liệu..." />
+        </form>
+
+        <div class="navbar__right">
+          <button class="icon-btn" aria-label="Thông báo">
+            <i class="fa-regular fa-bell"></i><span class="badge">3</span>
+          </button>
+          <button class="icon-btn" aria-label="Tin nhắn">
+            <i class="fa-regular fa-envelope"></i>
+          </button>
+          <div class="user">
+            <img src="" alt="Ảnh đại diện" class="user__avatar" />
+            <div class="user__info">
+              <span class="user__name"></span>
+              <span class="user__role"></span>
+            </div>
+            <i class="fa-solid fa-chevron-down user__caret"></i>
+          </div>
+        </div>
+      </header>
+
+      <main class="content study">
+        <div class="study-grid">
+          <!-- ========== CỘT TRÁI ========== -->
+          <aside class="study-side">
+            <!-- Thẻ thông tin thu gọn -->
+            <section class="box student-card">
+              <div class="student-card__head">
+                <img class="student-card__avatar" id="sideAvatar" src="" alt="" />
+                <div>
+                  <h2 id="sideName">—</h2>
+                  <span class="status"><i class="fa-solid fa-circle"></i> Đang học</span>
+                </div>
+              </div>
+              <dl class="kv">
+                <div><dt>Họ tên:</dt><dd id="kvName">—</dd></div>
+                <div><dt>Mã SV:</dt><dd id="kvMsv">—</dd></div>
+                <div><dt>Lớp:</dt><dd id="kvClass">—</dd></div>
+                <div><dt>Trạng thái:</dt><dd class="text-success">Đang học</dd></div>
+              </dl>
+            </section>
+
+            <!-- Điểm nhanh theo môn -->
+            <section class="box">
+              <h3 class="box__title"><i class="fa-solid fa-list-check"></i> Điểm theo môn</h3>
+              <ul class="quick-grades" id="quickGrades"></ul>
+            </section>
+
+            <!-- Tổng điểm -->
+            <section class="box">
+              <h3 class="box__title"><i class="fa-solid fa-calculator"></i> TỔNG ĐIỂM</h3>
+              <table class="summary-table" id="summaryTable"></table>
+            </section>
+          </aside>
+
+          <!-- ========== CỘT PHẢI ========== -->
+          <section class="study-main">
+            <nav class="study-tabs" role="tablist" id="studyTabs">
+              <button role="tab" data-tab="bang-diem">Bảng điểm</button>
+              <button role="tab" data-tab="hoc-phan-no">Học phần nợ</button>
+              <button role="tab" data-tab="khoi-kien-thuc">Khối kiến thức</button>
+              <button role="tab" data-tab="ket-qua-dang-ky">Kết quả đăng ký học</button>
+              <button role="tab" data-tab="quyet-dinh">Quyết định</button>
+              <button role="tab" data-tab="van-bang">Văn bằng - chứng chỉ</button>
+              <button role="tab" data-tab="canh-bao">Cảnh báo học vụ</button>
+              <button role="tab" data-tab="ren-luyen">Điểm rèn luyện</button>
+              <button role="tab" data-tab="chuong-trinh">Chương trình học</button>
+            </nav>
+
+            <div class="tab-panel" id="panel-bang-diem" data-panel="bang-diem"></div>
+            <div class="tab-panel" id="panel-hoc-phan-no" data-panel="hoc-phan-no" hidden></div>
+            <div class="tab-panel" id="panel-khoi-kien-thuc" data-panel="khoi-kien-thuc" hidden></div>
+            <div class="tab-panel" id="panel-ket-qua-dang-ky" data-panel="ket-qua-dang-ky" hidden></div>
+            <div class="tab-panel" id="panel-quyet-dinh" data-panel="quyet-dinh" hidden></div>
+            <div class="tab-panel" id="panel-van-bang" data-panel="van-bang" hidden></div>
+            <div class="tab-panel" id="panel-canh-bao" data-panel="canh-bao" hidden></div>
+            <div class="tab-panel" id="panel-ren-luyen" data-panel="ren-luyen" hidden></div>
+
+            <!-- Tab Chương trình học -->
+            <div class="tab-panel" id="panel-chuong-trinh" data-panel="chuong-trinh" hidden>
+              <div class="toolbar">
+                <label class="field">
+                  <span>Chương trình</span>
+                  <select id="programSelect"></select>
+                </label>
+                <label class="field field--grow">
+                  <span>Tìm học phần</span>
+                  <span class="field__input">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="search" id="courseSearch" placeholder="Nhập tên học phần..." />
+                  </span>
+                </label>
+              </div>
+
+              <div class="box box--flush">
+                <div class="table-wrap">
+                  <table class="data-table program-table">
+                    <thead>
+                      <tr>
+                        <th>STT</th>
+                        <th class="text-left">Tên học phần</th>
+                        <th>Số tín chỉ</th>
+                        <th>Năm học</th>
+                        <th>Điểm hệ 4</th>
+                        <th>Kết quả</th>
+                        <th>Chi tiết</th>
+                      </tr>
+                    </thead>
+                    <tbody id="programBody"></tbody>
+                  </table>
+                </div>
+                <p class="table-foot" id="programCount"></p>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Hộp thoại chi tiết học phần -->
+  <dialog class="modal" id="courseModal">
+    <div class="modal__head">
+      <h3 id="modalTitle"></h3>
+      <button type="button" class="modal__close" id="modalClose" aria-label="Đóng">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="modal__body" id="modalBody"></div>
+  </dialog>
+
+  <script src="data/students.js"></script>
+  <script src="app.js"></script>
+  <script src="hoc-tap.js"></script>
+</body>
+</html>
