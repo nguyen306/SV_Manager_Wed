@@ -5,60 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Học phí | Quản lý sinh viên</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="../../assets/css/style.css" />
   <link rel="stylesheet" href="tai-chinh.css" />
 </head>
-<body>
+<body data-root="../../" data-page="hoc-phi">
   <div class="app">
     <!-- ========== SIDEBAR ========== -->
-    <aside class="sidebar">
-      <div class="sidebar__brand">
-        <i class="fa-solid fa-graduation-cap"></i>
-        <span>StudentHub</span>
-      </div>
-
-      <nav class="sidebar__menu">
-        <a href="index.html" class="menu-item"><i class="fa-solid fa-newspaper"></i><span>Tin tức</span></a>
-        <a href="profile.html" class="menu-item"><i class="fa-solid fa-user"></i><span>Profile</span></a>
-        <a href="hoc-tap.html" class="menu-item"><i class="fa-solid fa-book-open"></i><span>Học tập</span></a>
-        <a href="dormitory.html" class="menu-item"><i class="fa-solid fa-building"></i><span>Ký túc xá</span></a>
-        <a href="library.html" class="menu-item"><i class="fa-solid fa-book"></i><span>Thư viện</span></a>
-        <a href="lich-hoc.html" class="menu-item"><i class="fa-solid fa-calendar-days"></i><span>Lịch học</span></a>
-        <a href="hoc-phi.html" class="menu-item active"><i class="fa-solid fa-wallet"></i><span>Học phí</span></a>
-        <a href="#" class="menu-item"><i class="fa-solid fa-comments"></i><span>Phản hồi</span></a>
-      </nav>
-
-      <div class="sidebar__footer">
-        <a href="#" class="menu-item"><i class="fa-solid fa-gear"></i><span>Cài đặt</span></a>
-        <a href="#" class="menu-item logout"><i class="fa-solid fa-right-from-bracket"></i><span>Đăng xuất</span></a>
-      </div>
-    </aside>
+    <aside data-layout="sidebar"></aside>
 
     <!-- ========== MAIN ========== -->
     <div class="main">
-      <header class="navbar">
-        <form class="search" role="search">
-          <i class="fa-solid fa-magnifying-glass"></i>
-          <input type="search" placeholder="Tìm kiếm sinh viên, môn học, tài liệu..." />
-        </form>
-
-        <div class="navbar__right">
-          <button class="icon-btn" aria-label="Thông báo">
-            <i class="fa-regular fa-bell"></i><span class="badge">3</span>
-          </button>
-          <button class="icon-btn" aria-label="Tin nhắn">
-            <i class="fa-regular fa-envelope"></i>
-          </button>
-          <div class="user">
-            <img src="" alt="Ảnh đại diện" class="user__avatar" />
-            <div class="user__info">
-              <span class="user__name"></span>
-              <span class="user__role"></span>
-            </div>
-            <i class="fa-solid fa-chevron-down user__caret"></i>
-          </div>
-        </div>
-      </header>
+      <header data-layout="navbar"></header>
 
       <main class="content fin">
         <h1 class="fin-title">TÀI CHÍNH SINH VIÊN</h1>
@@ -196,8 +153,8 @@
     </form>
   </dialog>
 
-  <script src="data/students.js"></script>
-  <script src="app.js"></script>
+  <script src="../../data/students.js"></script>
+  <script src="../../assets/js/app.js"></script>
   <script src="finance.js"></script>
   <script src="hoc-phi.js"></script>
 </body>

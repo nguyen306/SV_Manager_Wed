@@ -4,7 +4,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const student = getCurrentStudent();
   if (!student) {
-    window.location.href = "login.html";
+    window.location.href = pageUrl("dang-nhap");
     return;
   }
 
@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const noteOf = (r) =>
     [
       r.pass ? "" : "Học lại",
-      r.tutoring ? `<a class="tutor-link" href="lich-hoc.html">Phụ đạo tối ${esc(r.tutoring.schedule.split(" (")[0])}</a>` : "",
+      r.tutoring ? `<a class="tutor-link" href="${pageUrl("lich-hoc")}">Phụ đạo tối ${esc(r.tutoring.schedule.split(" (")[0])}</a>` : "",
     ].filter(Boolean).join("<br />");
 
   const passPill = (r) =>
@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <tr class="hl"><td>Điểm TB tích lũy (hệ 10 / hệ 4)</td><td>${fmt(total.cum10)} / ${fmt(total.cum4)}</td></tr>
     <tr><td>Xếp loại học lực</td><td><span class="rank ${rank.cls}">${rank.label}</span></td></tr>
     ${tutoringByName.size
-      ? `<tr><td>Môn phải học phụ đạo</td><td><a class="tutor-link" href="lich-hoc.html">${tutoringByName.size} môn</a></td></tr>`
+      ? `<tr><td>Môn phải học phụ đạo</td><td><a class="tutor-link" href="${pageUrl("lich-hoc")}">${tutoringByName.size} môn</a></td></tr>`
       : ""}`;
 
   /* ========== TAB: BẢNG ĐIỂM (theo năm học) ========== */
