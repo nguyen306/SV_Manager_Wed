@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thư viện | Quản lý sinh viên</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="library.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- ========== SIDEBAR ========== -->
+    <aside class="sidebar">
+      <div class="sidebar__brand">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <span>StudentHub</span>
+      </div>
+
+      <nav class="sidebar__menu">
+        <a href="index.html" class="menu-item"><i class="fa-solid fa-newspaper"></i><span>Tin tức</span></a>
+        <a href="profile.html" class="menu-item"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+        <a href="hoc-tap.html" class="menu-item"><i class="fa-solid fa-book-open"></i><span>Học tập</span></a>
+        <a href="dormitory.html" class="menu-item"><i class="fa-solid fa-building"></i><span>Ký túc xá</span></a>
+        <a href="library.html" class="menu-item active"><i class="fa-solid fa-book"></i><span>Thư viện</span></a>
+        <a href="lich-hoc.html" class="menu-item"><i class="fa-solid fa-calendar-days"></i><span>Lịch học</span></a>
+        <a href="hoc-phi.html" class="menu-item"><i class="fa-solid fa-wallet"></i><span>Học phí</span></a>
+        <a href="#" class="menu-item"><i class="fa-solid fa-comments"></i><span>Phản hồi</span></a>
+      </nav>
+
+      <div class="sidebar__footer">
+        <a href="#" class="menu-item"><i class="fa-solid fa-gear"></i><span>Cài đặt</span></a>
+        <a href="#" class="menu-item logout"><i class="fa-solid fa-right-from-bracket"></i><span>Đăng xuất</span></a>
+      </div>
+    </aside>
+
+    <!-- ========== MAIN ========== -->
+    <div class="main">
+      <header class="navbar">
+        <form class="search" role="search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="search" placeholder="Tìm kiếm sinh viên, môn học, tài liệu..." />
+        </form>
+
+        <div class="navbar__right">
+          <button class="icon-btn" aria-label="Thông báo">
+            <i class="fa-regular fa-bell"></i><span class="badge">3</span>
+          </button>
+          <button class="icon-btn" aria-label="Tin nhắn">
+            <i class="fa-regular fa-envelope"></i>
+          </button>
+          <div class="user">
+            <img src="" alt="Ảnh đại diện" class="user__avatar" />
+            <div class="user__info">
+              <span class="user__name"></span>
+              <span class="user__role"></span>
+            </div>
+            <i class="fa-solid fa-chevron-down user__caret"></i>
+          </div>
+        </div>
+      </header>
+
+      <main class="content lib">
+        <h1 class="lib-title">THƯ VIỆN</h1>
+
+        <nav class="lib-tabs" role="tablist">
+          <button role="tab" data-tab="catalog" aria-selected="true" aria-controls="panel-catalog" id="tab-catalog">
+            <i class="fa-solid fa-magnifying-glass"></i> Tra cứu &amp; Mượn sách
+          </button>
+          <button role="tab" data-tab="loans" aria-selected="false" aria-controls="panel-loans" id="tab-loans">
+            <i class="fa-solid fa-book-bookmark"></i> Sách đang mượn &amp; Lịch sử
+            <span class="tab-count" id="loanCount" hidden>0</span>
+          </button>
+        </nav>
+
+        <!-- ========== TAB 1: TRA CỨU & MƯỢN SÁCH ========== -->
+        <section id="panel-catalog" data-panel="catalog" role="tabpanel" aria-labelledby="tab-catalog" class="lib-panel">
+          <!-- ========== TRẠNG THÁI HOẠT ĐỘNG ========== -->
+          <div class="status-grid">
+            <!-- Giờ mở cửa -->
+            <article class="widget" id="statusWidget" aria-live="polite">
+              <header class="widget__head">
+                <div class="widget__icon"><i class="fa-regular fa-clock"></i></div>
+                <div>
+                  <h2>Trạng thái hoạt động</h2>
+                  <p id="todayLabel">—</p>
+                </div>
+                <span class="status-badge" id="statusBadge">
+                  <span class="status-dot"></span><span id="statusText">—</span>
+                </span>
+              </header>
+
+              <div class="clock">
+                <span class="clock__time" id="clockTime">--:--</span>
+                <span class="clock__hint" id="statusHint">—</span>
+              </div>
+
+              <ul class="sessions" id="sessions"></ul>
+              <p class="widget__note"><i class="fa-solid fa-circle-info"></i> Mở cửa hàng ngày. Chủ Nhật không có ca tối.</p>
+            </article>
+
+            <!-- Chỗ ngồi phòng đọc -->
+            <article class="widget" id="seatWidget" aria-live="polite">
+              <header class="widget__head">
+                <div class="widget__icon widget__icon--seat"><i class="fa-solid fa-chair"></i></div>
+                <div>
+                  <h2>Phòng đọc tự học</h2>
+                  <p>Tầng 2 · Sức chứa <span id="seatCapacity">100</span> chỗ</p>
+                </div>
+                <span class="level-badge" id="levelBadge">—</span>
+              </header>
+
+              <div class="seat-numbers">
+                <div>
+                  <i class="fa-solid fa-user-group"></i>
+                  <b id="seatUsed">0</b><span>đang ngồi học</span>
+                </div>
+                <div class="seat-numbers__free">
+                  <i class="fa-solid fa-couch"></i>
+                  <b id="seatFree">0</b><span>chỗ còn trống</span>
+                </div>
+              </div>
+
+              <div class="progress" role="progressbar" id="seatBar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Tỉ lệ chỗ đã có người">
+                <span class="progress__fill" id="seatFill"></span>
+              </div>
+              <div class="progress__labels">
+                <span id="seatSummary">—</span>
+                <span id="seatPercent">0%</span>
+              </div>
+
+              <footer class="widget__foot">
+                <span><i class="fa-solid fa-rotate"></i> Cập nhật lúc <b id="seatUpdated">--:--</b></span>
+                <button type="button" class="refresh-btn" id="seatRefresh">
+                  <i class="fa-solid fa-arrows-rotate"></i> Làm mới
+                </button>
+              </footer>
+            </article>
+          </div>
+
+          <!-- ========== TÌM KIẾM ========== -->
+          <div class="box toolbar">
+            <form class="book-search" id="bookSearch" role="search">
+              <span class="book-search__input">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="search" id="bookQuery" placeholder="Tìm theo tên sách, tác giả hoặc chuyên ngành (VD: C++, cơ sở dữ liệu)..." />
+              </span>
+              <select id="categoryFilter" aria-label="Lọc theo chuyên ngành">
+                <option value="">Tất cả chuyên ngành</option>
+              </select>
+              <label class="check">
+                <input type="checkbox" id="onlyAvailable" />
+                <span>Chỉ hiện sách còn</span>
+              </label>
+            </form>
+            <p class="result-count" id="resultCount"></p>
+          </div>
+
+          <!-- ========== DANH SÁCH SÁCH ========== -->
+          <div class="book-grid" id="bookGrid"></div>
+        </section>
+
+        <!-- ========== TAB 2: SÁCH ĐANG MƯỢN & LỊCH SỬ ========== -->
+        <section id="panel-loans" data-panel="loans" role="tabpanel" aria-labelledby="tab-loans" class="lib-panel" hidden>
+          <div class="loan-stats" id="loanStats"></div>
+
+          <div class="box box--flush">
+            <div class="box__head">
+              <h2><i class="fa-solid fa-book-bookmark"></i> Sách đang mượn</h2>
+              <span class="box__hint">Tối đa <b id="loanLimit">5</b> quyển · mỗi quyển gia hạn được 1 lần (+7 ngày)</span>
+            </div>
+            <div class="table-wrap">
+              <table class="loan-table">
+                <thead>
+                  <tr>
+                    <th>STT</th><th>Tên sách</th><th>Ngày mượn</th><th>Hạn trả</th><th>Trạng thái</th><th>Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody id="activeBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="box box--flush">
+            <div class="box__head box__head--soft">
+              <h2><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử đã trả</h2>
+            </div>
+            <div class="table-wrap">
+              <table class="loan-table">
+                <thead>
+                  <tr>
+                    <th>STT</th><th>Tên sách</th><th>Ngày mượn</th><th>Hạn trả</th><th>Ngày trả</th><th>Trạng thái</th>
+                  </tr>
+                </thead>
+                <tbody id="historyBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- ========== POPUP ========== -->
+  <dialog class="modal" id="modal" aria-labelledby="modalTitle">
+    <form method="dialog">
+      <div class="modal__head">
+        <div class="modal__icon"><i class="fa-solid fa-book" id="modalIcon"></i></div>
+        <div>
+          <h3 id="modalTitle"></h3>
+          <p id="modalSub"></p>
+        </div>
+      </div>
+      <div class="modal__body" id="modalBody"></div>
+      <div class="modal__actions" id="modalActions"></div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="data/students.js"></script>
+  <script src="data/books.js"></script>
+  <script src="app.js"></script>
+  <script src="library.js"></script>
+</body>
+</html>
