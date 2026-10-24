@@ -173,7 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
      ================================================================ */
   const student = getCurrentStudent();
   if (!student) {
-    window.location.href = "login.html";
+    window.location.href = pageUrl("dang-nhap");
     return;
   }
 

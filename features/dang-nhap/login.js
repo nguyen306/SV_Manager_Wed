@@ -54,10 +54,13 @@ document.addEventListener("DOMContentLoaded", () => {
     return true;
   }
 
-  // Trang cần quay lại sau khi đăng nhập (chỉ nhận tên file nội bộ, tránh chuyển ra trang ngoài)
+  // Trang cần quay lại sau khi đăng nhập: ?next=<khóa trang trong PAGES>[#tab].
+  // Chỉ nhận khóa đã khai báo (tránh chuyển ra trang ngoài); mặc định về Trang chủ.
   function nextPage() {
-    const next = new URLSearchParams(location.search).get("next") || "";
-    return /^[\w-]+\.html(#[\w-]*)?$/.test(next) && !next.startsWith("login.html") ? next : "profile.html";
+    const [key, hash = ""] = (new URLSearchParams(location.search).get("next") || "").split("#");
+    return PAGES[key] && key !== "dang-nhap" && /^[\w-]*$/.test(hash)
+      ? pageUrl(key, hash ? `#${hash}` : "")
+      : pageUrl("trang-chu");
   }
 
   username.addEventListener("blur", validateUsername);
