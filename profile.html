@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thông tin cá nhân | Quản lý sinh viên</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="profile.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- ========== SIDEBAR ========== -->
+    <aside class="sidebar">
+      <div class="sidebar__brand">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <span>StudentHub</span>
+      </div>
+
+      <nav class="sidebar__menu">
+        <a href="index.html" class="menu-item"><i class="fa-solid fa-newspaper"></i><span>Tin tức</span></a>
+        <a href="profile.html" class="menu-item active"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+        <a href="hoc-tap.html" class="menu-item"><i class="fa-solid fa-book-open"></i><span>Học tập</span></a>
+        <a href="dormitory.html" class="menu-item"><i class="fa-solid fa-building"></i><span>Ký túc xá</span></a>
+        <a href="library.html" class="menu-item"><i class="fa-solid fa-book"></i><span>Thư viện</span></a>
+        <a href="lich-hoc.html" class="menu-item"><i class="fa-solid fa-calendar-days"></i><span>Lịch học</span></a>
+        <a href="hoc-phi.html" class="menu-item"><i class="fa-solid fa-wallet"></i><span>Học phí</span></a>
+        <a href="#" class="menu-item"><i class="fa-solid fa-comments"></i><span>Phản hồi</span></a>
+      </nav>
+
+      <div class="sidebar__footer">
+        <a href="#" class="menu-item"><i class="fa-solid fa-gear"></i><span>Cài đặt</span></a>
+        <a href="#" class="menu-item logout"><i class="fa-solid fa-right-from-bracket"></i><span>Đăng xuất</span></a>
+      </div>
+    </aside>
+
+    <!-- ========== MAIN ========== -->
+    <div class="main">
+      <header class="navbar">
+        <form class="search" role="search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="search" placeholder="Tìm kiếm sinh viên, môn học, tài liệu..." />
+        </form>
+
+        <div class="navbar__right">
+          <button class="icon-btn" aria-label="Thông báo">
+            <i class="fa-regular fa-bell"></i><span class="badge">3</span>
+          </button>
+          <button class="icon-btn" aria-label="Tin nhắn">
+            <i class="fa-regular fa-envelope"></i>
+          </button>
+          <div class="user">
+            <img src="" alt="Ảnh đại diện" class="user__avatar" />
+            <div class="user__info">
+              <span class="user__name"></span>
+              <span class="user__role"></span>
+            </div>
+            <i class="fa-solid fa-chevron-down user__caret"></i>
+          </div>
+        </div>
+      </header>
+
+      <main class="content profile">
+        <!-- Tiêu đề trang -->
+        <h1 class="page-title">THÔNG TIN CÁ NHÂN</h1>
+
+        <!-- Thanh tab -->
+        <div class="tabs" role="tablist">
+          <button class="tab" role="tab" id="tab-plan" aria-controls="panel-plan" aria-selected="false">
+            <i class="fa-regular fa-calendar-check"></i> KẾ HOẠCH NHẬP HỒ SƠ
+          </button>
+          <button class="tab active" role="tab" id="tab-bank" aria-controls="panel-bank" aria-selected="true">
+            <i class="fa-solid fa-building-columns"></i> Cập nhật thông tin Ngân hàng
+          </button>
+        </div>
+
+        <!-- TAB 1: Kế hoạch nhập hồ sơ -->
+        <section class="panel" id="panel-plan" role="tabpanel" aria-labelledby="tab-plan" hidden>
+          <div class="section-head"><i class="fa-regular fa-calendar-check"></i> KẾ HOẠCH NHẬP HỒ SƠ</div>
+          <ol class="timeline">
+            <li class="done">
+              <span class="timeline__date">01/10 – 15/10</span>
+              <span class="timeline__text">Sinh viên kiểm tra thông tin cá nhân (họ tên, ngày sinh, lớp)</span>
+            </li>
+            <li class="current">
+              <span class="timeline__date">16/10 – 31/10</span>
+              <span class="timeline__text">Cập nhật số điện thoại và thông tin tài khoản ngân hàng</span>
+            </li>
+            <li>
+              <span class="timeline__date">01/11 – 10/11</span>
+              <span class="timeline__text">Phòng Công tác sinh viên duyệt hồ sơ</span>
+            </li>
+            <li>
+              <span class="timeline__date">Từ 15/11</span>
+              <span class="timeline__text">Chi trả học bổng / hỗ trợ qua tài khoản đã đăng ký</span>
+            </li>
+          </ol>
+        </section>
+
+        <!-- TAB 2: Cập nhật thông tin -->
+        <section class="panel" id="panel-bank" role="tabpanel" aria-labelledby="tab-bank">
+          <div class="section-head">I. PHẦN BẢN THÂN HỌC SINH, SINH VIÊN</div>
+
+          <div class="profile-grid">
+            <!-- Cột trái: thẻ thông tin -->
+            <aside class="info-card">
+              <div class="avatar">
+                <img id="avatarImg" src="" alt="Ảnh đại diện sinh viên" />
+                <label class="avatar__btn" for="avatarInput" title="Đổi ảnh đại diện">
+                  <i class="fa-solid fa-camera"></i>
+                  <span class="sr-only">Đổi ảnh đại diện</span>
+                </label>
+                <input type="file" id="avatarInput" accept="image/*" hidden />
+              </div>
+
+              <dl class="info-list">
+                <div class="info-row"><dt>HỌ VÀ TÊN:</dt><dd data-field="hoTen">—</dd></div>
+                <div class="info-row"><dt>NGÀY SINH:</dt><dd data-field="ngaySinh">—</dd></div>
+                <div class="info-row"><dt>MÃ SV:</dt><dd data-field="msv">—</dd></div>
+                <div class="info-row"><dt>NGÀNH HỌC:</dt><dd data-field="nganh">—</dd></div>
+                <div class="info-row"><dt>LỚP QUẢN LÝ:</dt><dd data-field="lop">—</dd></div>
+              </dl>
+            </aside>
+
+            <!-- Cột phải: bảng nhập liệu -->
+            <form class="update-card" id="updateForm" novalidate>
+              <div class="table-wrap">
+                <table class="update-table">
+                  <thead>
+                    <tr>
+                      <th class="col-group">NHÓM</th>
+                      <th class="col-name">TÊN THÔNG TIN</th>
+                      <th class="col-input">DỮ LIỆU CẦN NHẬP</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="group" data-label="Nhóm"><span class="chip chip--contact">Liên hệ</span></td>
+                      <td class="name" data-label="Tên thông tin">
+                        <label for="sdt">1. SĐT di động cá nhân</label>
+                      </td>
+                      <td data-label="Dữ liệu cần nhập">
+                        <div class="cell-input">
+                          <i class="fa-solid fa-mobile-screen"></i>
+                          <input type="tel" id="sdt" name="sdt" inputmode="numeric" maxlength="10" />
+                        </div>
+                        <small class="error" id="sdtError"></small>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="group" data-label="Nhóm" rowspan="2"><span class="chip chip--bank">Ngân hàng</span></td>
+                      <td class="name name--strong" data-label="Tên thông tin">
+                        <label for="soTaiKhoan">2. SỐ TÀI KHOẢN NGÂN HÀNG</label>
+                      </td>
+                      <td data-label="Dữ liệu cần nhập">
+                        <div class="cell-input">
+                          <i class="fa-regular fa-credit-card"></i>
+                          <input type="text" id="soTaiKhoan" name="soTaiKhoan" inputmode="numeric"
+                                 maxlength="19" placeholder="Nhập số tài khoản" />
+                        </div>
+                        <small class="error" id="soTaiKhoanError"></small>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="name name--strong" data-label="Tên thông tin">
+                        <label for="tenNganHang">3. TÊN NGÂN HÀNG</label>
+                      </td>
+                      <td data-label="Dữ liệu cần nhập">
+                        <div class="cell-input">
+                          <i class="fa-solid fa-building-columns"></i>
+                          <input type="text" id="tenNganHang" name="tenNganHang" list="bankList"
+                                 placeholder="VD: Vietcombank, BIDV..." />
+                        </div>
+                        <datalist id="bankList">
+                          <option value="Vietcombank"></option>
+                          <option value="VietinBank"></option>
+                          <option value="BIDV"></option>
+                          <option value="Agribank"></option>
+                          <option value="Techcombank"></option>
+                          <option value="MB Bank"></option>
+                          <option value="ACB"></option>
+                          <option value="VPBank"></option>
+                          <option value="TPBank"></option>
+                          <option value="Sacombank"></option>
+                        </datalist>
+                        <small class="error" id="tenNganHangError"></small>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="form-actions">
+                <p class="saved-at" id="savedAt"></p>
+                <button type="reset" class="btn btn--ghost">
+                  <i class="fa-solid fa-rotate-left"></i> Làm lại
+                </button>
+                <button type="submit" class="btn btn--primary">
+                  <i class="fa-solid fa-floppy-disk"></i> Lưu thông tin
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="data/students.js"></script>
+  <script src="app.js"></script>
+  <script src="profile.js"></script>
+</body>
+</html>
