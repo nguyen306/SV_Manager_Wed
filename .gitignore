@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.pyc
+
+# Excel lock files
+~$*.xlsx
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
