@@ -1,0 +1,260 @@
+/* ========== TRANG THỜI KHÓA BIỂU ========== */
+:root {
+  --navy: #0b3d91;
+  --navy-soft: #f1f5fd;
+  --tutor: #c2410c;
+  --tutor-soft: #fff7ed;
+  --tutor-border: #fdba74;
+}
+
+.tkb { font-size: 14px; line-height: 1.5; display: flex; flex-direction: column; gap: 18px; }
+
+.tkb-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.tkb-title {
+  position: relative;
+  padding-left: 16px;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: var(--navy);
+}
+.tkb-title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 2px;
+  bottom: 2px;
+  width: 6px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #f97316, #ef4444);
+}
+.tkb-sub { margin-top: 4px; padding-left: 16px; font-size: 13px; color: var(--muted); }
+
+/* Chọn năm học */
+.year-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 5px;
+  background: var(--white);
+  border: 1px solid #e6ebf4;
+  border-radius: 12px;
+}
+.year-tabs button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #475569;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.3;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+}
+.year-tabs button small { font-size: 11px; font-weight: 500; opacity: 0.8; }
+.year-tabs button:hover { background: var(--navy-soft); color: var(--navy); }
+.year-tabs button[aria-selected="true"] { background: var(--navy); color: var(--white); box-shadow: 0 3px 8px rgba(11, 61, 145, 0.25); }
+.year-tabs .now { display: inline-block; width: 6px; height: 6px; margin-left: 4px; border-radius: 50%; background: #22c55e; vertical-align: middle; }
+
+/* Cảnh báo phụ đạo */
+.tutor-alert {
+  display: flex;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--tutor-border);
+  border-radius: 12px;
+  background: var(--tutor-soft);
+  color: #7c2d12;
+  font-size: 13.5px;
+}
+.tutor-alert[hidden] { display: none; }
+.tutor-alert > i { margin-top: 3px; font-size: 18px; color: var(--tutor); }
+.tutor-alert b { color: var(--tutor); }
+.tutor-alert ul { margin: 6px 0 0 18px; }
+.tutor-alert li { margin: 2px 0; }
+
+/* Thống kê */
+.tkb-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
+.tkb-stat {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--white);
+  border: 1px solid #e6ebf4;
+  border-radius: 14px;
+}
+.tkb-stat i {
+  flex: 0 0 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  font-size: 17px;
+}
+.tkb-stat b { display: block; font-size: 20px; line-height: 1.2; }
+.tkb-stat span { font-size: 12.5px; color: var(--muted); }
+
+/* Khối chung */
+.box {
+  background: var(--white);
+  border: 1px solid #e6ebf4;
+  border-radius: 16px;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+}
+.box--flush { overflow: hidden; }
+.box__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  padding: 13px 18px;
+  background: linear-gradient(135deg, var(--navy), #1557c0);
+  color: var(--white);
+}
+.box__head h2 { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 700; }
+.box__head--soft { background: var(--navy-soft); color: var(--navy); }
+.legend { display: flex; gap: 14px; font-size: 12.5px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.dot { width: 12px; height: 12px; border-radius: 4px; display: inline-block; }
+.dot--day { background: #93c5fd; }
+.dot--tutor { background: var(--tutor-border); }
+
+.table-wrap { overflow-x: auto; }
+
+/* ---------- Lưới tuần ---------- */
+.week { width: 100%; min-width: 860px; border-collapse: collapse; table-layout: fixed; font-size: 13px; }
+.week th, .week td { border: 1px solid #edf0f6; }
+.week thead th {
+  padding: 10px 6px;
+  background: #f8faff;
+  color: var(--navy);
+  font-size: 12.5px;
+  font-weight: 700;
+  text-align: center;
+}
+.week thead th.is-today { background: var(--navy); color: var(--white); }
+.week thead th small { display: block; font-size: 11px; font-weight: 500; opacity: 0.8; }
+.week th.slot {
+  width: 112px;
+  padding: 10px;
+  background: #f8faff;
+  color: var(--navy);
+  font-size: 12.5px;
+  text-align: left;
+}
+.week th.slot small { display: block; font-weight: 500; color: var(--muted); }
+.week tr.row--evening th.slot { background: var(--tutor-soft); color: var(--tutor); }
+.week td { height: 86px; padding: 6px; vertical-align: top; }
+.week td.is-today { background: #f5f8ff; }
+.week tr.row--evening td { background: #fffbf5; }
+.week tr.row--evening td.is-today { background: #fff3e6; }
+
+.class-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border-left: 4px solid #3b82f6;
+  border-radius: 8px;
+  background: #eff6ff;
+  animation: pop 0.3s ease both;
+}
+.class-card b { font-size: 12.5px; line-height: 1.3; color: #1e3a8a; }
+.class-card span { font-size: 11.5px; color: #475569; }
+.class-card--tutor { border-left-color: #f97316; background: #ffedd5; }
+.class-card--tutor b { color: #9a3412; }
+.class-card .tag {
+  align-self: flex-start;
+  margin-top: 2px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: #f97316;
+  color: var(--white);
+  font-size: 10.5px;
+  font-weight: 700;
+}
+@keyframes pop { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: none; } }
+
+/* ---------- Danh sách theo ngày (điện thoại) ---------- */
+.day-list { display: none; padding: 12px; flex-direction: column; gap: 10px; }
+.day {
+  border: 1px solid #edf0f6;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.day.is-today { border-color: var(--navy); }
+.day__head {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: #f8faff;
+  color: var(--navy);
+  font-weight: 700;
+  font-size: 13px;
+}
+.day.is-today .day__head { background: var(--navy); color: var(--white); }
+.day__items { display: flex; flex-direction: column; gap: 6px; padding: 8px; }
+.day__item { display: grid; grid-template-columns: 92px 1fr; gap: 8px; align-items: stretch; }
+.day__slot { font-size: 11.5px; font-weight: 700; color: var(--navy); padding-top: 8px; }
+.day__slot small { display: block; font-weight: 500; color: var(--muted); }
+.day__empty { padding: 10px 12px; font-size: 12.5px; color: var(--muted); }
+
+/* ---------- Bảng danh sách ---------- */
+.list-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.list-table th {
+  padding: 11px 12px;
+  background: #f8faff;
+  color: var(--navy);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+  white-space: nowrap;
+  border-bottom: 1px solid #dfe6f3;
+}
+.list-table td { padding: 11px 12px; border-bottom: 1px solid #eef1f7; }
+.list-table tbody tr:nth-child(even) td { background: #fafbff; }
+.list-table tbody tr.is-tutor td { background: var(--tutor-soft); }
+.list-table .score { font-weight: 700; color: #ea580c; }
+.list-table .score.low { color: #dc2626; }
+.pill {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.pill--day { background: #dbeafe; color: #1d4ed8; }
+.pill--tutor { background: #ffedd5; color: var(--tutor); }
+.empty-row { padding: 26px 12px !important; text-align: center; color: var(--muted); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 760px) {
+  .week-wrap { display: none; }
+  .day-list { display: flex; }
+  .box__head { padding: 12px 14px; }
+  .year-tabs { width: 100%; }
+  .year-tabs button { flex: 1; padding: 6px 4px; }
+}
+@media (max-width: 600px) {
+  .tkb-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .tkb-stat { padding: 12px; gap: 10px; }
+  .tkb-stat i { flex-basis: 36px; height: 36px; font-size: 15px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tkb * { animation: none !important; transition: none !important; }
+}
