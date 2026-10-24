@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ký túc xá | Quản lý sinh viên</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="dormitory.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- ========== SIDEBAR ========== -->
+    <aside class="sidebar">
+      <div class="sidebar__brand">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <span>StudentHub</span>
+      </div>
+
+      <nav class="sidebar__menu">
+        <a href="index.html" class="menu-item"><i class="fa-solid fa-newspaper"></i><span>Tin tức</span></a>
+        <a href="profile.html" class="menu-item"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+        <a href="hoc-tap.html" class="menu-item"><i class="fa-solid fa-book-open"></i><span>Học tập</span></a>
+        <a href="dormitory.html" class="menu-item active"><i class="fa-solid fa-building"></i><span>Ký túc xá</span></a>
+        <a href="library.html" class="menu-item"><i class="fa-solid fa-book"></i><span>Thư viện</span></a>
+        <a href="lich-hoc.html" class="menu-item"><i class="fa-solid fa-calendar-days"></i><span>Lịch học</span></a>
+        <a href="hoc-phi.html" class="menu-item"><i class="fa-solid fa-wallet"></i><span>Học phí</span></a>
+        <a href="#" class="menu-item"><i class="fa-solid fa-comments"></i><span>Phản hồi</span></a>
+      </nav>
+
+      <div class="sidebar__footer">
+        <a href="#" class="menu-item"><i class="fa-solid fa-gear"></i><span>Cài đặt</span></a>
+        <a href="#" class="menu-item logout"><i class="fa-solid fa-right-from-bracket"></i><span>Đăng xuất</span></a>
+      </div>
+    </aside>
+
+    <!-- ========== MAIN ========== -->
+    <div class="main">
+      <header class="navbar">
+        <form class="search" role="search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="search" placeholder="Tìm kiếm sinh viên, môn học, tài liệu..." />
+        </form>
+
+        <div class="navbar__right">
+          <button class="icon-btn" aria-label="Thông báo">
+            <i class="fa-regular fa-bell"></i><span class="badge">3</span>
+          </button>
+          <button class="icon-btn" aria-label="Tin nhắn">
+            <i class="fa-regular fa-envelope"></i>
+          </button>
+          <div class="user">
+            <img src="" alt="Ảnh đại diện" class="user__avatar" />
+            <div class="user__info">
+              <span class="user__name"></span>
+              <span class="user__role"></span>
+            </div>
+            <i class="fa-solid fa-chevron-down user__caret"></i>
+          </div>
+        </div>
+      </header>
+
+      <main class="content dorm">
+        <h1 class="dorm-title">QUẢN LÝ KÝ TÚC XÁ</h1>
+
+        <!-- Tabs -->
+        <nav class="dorm-tabs" role="tablist">
+          <button role="tab" id="tab-register" data-tab="register" aria-controls="panel-register" aria-selected="true">
+            <i class="fa-solid fa-door-open"></i> Đăng ký phòng ký túc xá
+          </button>
+          <button role="tab" id="tab-history" data-tab="history" aria-controls="panel-history" aria-selected="false">
+            <i class="fa-solid fa-clock-rotate-left"></i> Lịch sử đăng ký của tôi
+            <span class="tab-count" id="historyCount" hidden>0</span>
+          </button>
+        </nav>
+
+        <!-- ========== TAB 1: ĐĂNG KÝ PHÒNG ========== -->
+        <section class="tab-panel" id="panel-register" data-panel="register" role="tabpanel" aria-labelledby="tab-register">
+          <!-- Thống kê nhanh -->
+          <div class="stats" id="stats"></div>
+
+          <!-- Thông báo phòng hiện tại -->
+          <div class="notice" id="currentNotice" hidden></div>
+
+          <!-- Bộ lọc -->
+          <div class="filters">
+            <div class="segmented" role="radiogroup" aria-label="Lọc theo khu">
+              <button type="button" role="radio" data-gender="all" aria-checked="true">Tất cả</button>
+              <button type="button" role="radio" data-gender="nam" aria-checked="false">
+                <i class="fa-solid fa-mars"></i> Khu Nam
+              </button>
+              <button type="button" role="radio" data-gender="nu" aria-checked="false">
+                <i class="fa-solid fa-venus"></i> Khu Nữ
+              </button>
+            </div>
+            <label class="check">
+              <input type="checkbox" id="onlyAvailable" />
+              <span>Chỉ hiện phòng còn chỗ</span>
+            </label>
+            <div class="legend">
+              <span><i class="dot dot--nam"></i>Nam</span>
+              <span><i class="dot dot--nu"></i>Nữ</span>
+              <span><i class="dot dot--full"></i>Hết chỗ</span>
+              <span><i class="dot dot--mine"></i>Phòng của bạn</span>
+            </div>
+          </div>
+
+          <!-- 3 khối loại phòng (render bằng JS) -->
+          <div class="room-types" id="roomTypes"></div>
+        </section>
+
+        <!-- ========== TAB 2: LỊCH SỬ ĐĂNG KÝ ========== -->
+        <section class="tab-panel" id="panel-history" data-panel="history" role="tabpanel" aria-labelledby="tab-history" hidden>
+          <div class="box box--flush">
+            <div class="box__head">
+              <h2><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử đăng ký của tôi</h2>
+            </div>
+            <div class="table-wrap">
+              <table class="history-table">
+                <thead>
+                  <tr>
+                    <th>STT</th>
+                    <th>Họ và tên</th>
+                    <th>Mã sinh viên</th>
+                    <th>Lớp quản lý</th>
+                    <th>Phòng</th>
+                    <th>Loại phòng</th>
+                    <th>Mức giá</th>
+                    <th>Ngày đăng ký</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody id="historyBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- ========== POPUP XÁC NHẬN ========== -->
+  <dialog class="modal" id="confirmModal" aria-labelledby="modalTitle">
+    <form method="dialog">
+      <div class="modal__head">
+        <div class="modal__icon"><i class="fa-solid fa-building"></i></div>
+        <div>
+          <h3 id="modalTitle">Xác nhận đăng ký phòng</h3>
+          <p>Vui lòng kiểm tra lại thông tin trước khi xác nhận</p>
+        </div>
+      </div>
+      <div class="modal__body" id="modalBody"></div>
+      <div class="modal__actions" id="modalActions">
+        <button type="submit" value="cancel" class="btn btn--ghost">Hủy</button>
+        <button type="submit" value="confirm" class="btn btn--primary" id="confirmBtn">
+          <i class="fa-solid fa-check"></i> Xác nhận đăng ký
+        </button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="data/students.js"></script>
+  <script src="app.js"></script>
+  <script src="dormitory.js"></script>
+</body>
+</html>
