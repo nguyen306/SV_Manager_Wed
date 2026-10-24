@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thời khóa biểu | Quản lý sinh viên</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="lich-hoc.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- ========== SIDEBAR ========== -->
+    <aside class="sidebar">
+      <div class="sidebar__brand">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <span>StudentHub</span>
+      </div>
+
+      <nav class="sidebar__menu">
+        <a href="index.html" class="menu-item"><i class="fa-solid fa-newspaper"></i><span>Tin tức</span></a>
+        <a href="profile.html" class="menu-item"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+        <a href="hoc-tap.html" class="menu-item"><i class="fa-solid fa-book-open"></i><span>Học tập</span></a>
+        <a href="dormitory.html" class="menu-item"><i class="fa-solid fa-building"></i><span>Ký túc xá</span></a>
+        <a href="library.html" class="menu-item"><i class="fa-solid fa-book"></i><span>Thư viện</span></a>
+        <a href="lich-hoc.html" class="menu-item active"><i class="fa-solid fa-calendar-days"></i><span>Lịch học</span></a>
+        <a href="hoc-phi.html" class="menu-item"><i class="fa-solid fa-wallet"></i><span>Học phí</span></a>
+        <a href="#" class="menu-item"><i class="fa-solid fa-comments"></i><span>Phản hồi</span></a>
+      </nav>
+
+      <div class="sidebar__footer">
+        <a href="#" class="menu-item"><i class="fa-solid fa-gear"></i><span>Cài đặt</span></a>
+        <a href="#" class="menu-item logout"><i class="fa-solid fa-right-from-bracket"></i><span>Đăng xuất</span></a>
+      </div>
+    </aside>
+
+    <!-- ========== MAIN ========== -->
+    <div class="main">
+      <header class="navbar">
+        <form class="search" role="search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="search" placeholder="Tìm kiếm sinh viên, môn học, tài liệu..." />
+        </form>
+
+        <div class="navbar__right">
+          <button class="icon-btn" aria-label="Thông báo">
+            <i class="fa-regular fa-bell"></i><span class="badge">3</span>
+          </button>
+          <button class="icon-btn" aria-label="Tin nhắn">
+            <i class="fa-regular fa-envelope"></i>
+          </button>
+          <div class="user">
+            <img src="" alt="Ảnh đại diện" class="user__avatar" />
+            <div class="user__info">
+              <span class="user__name"></span>
+              <span class="user__role"></span>
+            </div>
+            <i class="fa-solid fa-chevron-down user__caret"></i>
+          </div>
+        </div>
+      </header>
+
+      <main class="content tkb">
+        <div class="tkb-head">
+          <div>
+            <h1 class="tkb-title">THỜI KHÓA BIỂU</h1>
+            <p class="tkb-sub" id="tkbSub">—</p>
+          </div>
+          <nav class="year-tabs" id="yearTabs" role="tablist" aria-label="Chọn năm học"></nav>
+        </div>
+
+        <!-- Thông báo phụ đạo -->
+        <div class="tutor-alert" id="tutorAlert" hidden></div>
+
+        <!-- Thống kê -->
+        <div class="tkb-stats" id="tkbStats"></div>
+
+        <!-- Lưới tuần (máy tính) -->
+        <section class="box box--flush">
+          <div class="box__head">
+            <h2><i class="fa-regular fa-calendar"></i> <span id="gridTitle">Lịch học trong tuần</span></h2>
+            <div class="legend">
+              <span><i class="dot dot--day"></i>Học chính thức</span>
+              <span><i class="dot dot--tutor"></i>Phụ đạo tối</span>
+            </div>
+          </div>
+          <div class="table-wrap week-wrap">
+            <table class="week" id="weekTable"></table>
+          </div>
+          <!-- Danh sách theo ngày (điện thoại) -->
+          <div class="day-list" id="dayList"></div>
+        </section>
+
+        <!-- Danh sách môn của năm -->
+        <section class="box box--flush">
+          <div class="box__head box__head--soft">
+            <h2><i class="fa-solid fa-list-ul"></i> Danh sách môn học</h2>
+          </div>
+          <div class="table-wrap">
+            <table class="list-table">
+              <thead>
+                <tr><th>STT</th><th>Môn học</th><th>Số TC</th><th>Thứ</th><th>Ca học</th><th>Loại</th><th>Điểm hệ 4</th></tr>
+              </thead>
+              <tbody id="listBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="data/students.js"></script>
+  <script src="app.js"></script>
+  <script src="lich-hoc.js"></script>
+</body>
+</html>
