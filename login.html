@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đăng nhập | Cổng thông tin sinh viên</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="login.css" />
+</head>
+<body>
+  <!-- Đồ họa học tập mờ trang trí phía trên -->
+  <div class="bg-decor" aria-hidden="true">
+    <i class="fa-solid fa-graduation-cap d1"></i>
+    <i class="fa-solid fa-book-open d2"></i>
+    <i class="fa-solid fa-flask d3"></i>
+    <i class="fa-solid fa-calculator d4"></i>
+    <i class="fa-solid fa-pen-nib d5"></i>
+    <i class="fa-solid fa-atom d6"></i>
+    <i class="fa-solid fa-laptop-code d7"></i>
+  </div>
+
+  <main class="login-wrapper">
+    <div class="login-card">
+
+      <!-- ========== CỘT TRÁI: GIỚI THIỆU ========== -->
+      <section class="intro">
+        <div class="intro__logo">
+          <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+
+        <h1 class="intro__title">
+          CHÀO MỪNG ĐẾN VỚI<br /><span>CỔNG THÔNG TIN SINH VIÊN</span>
+        </h1>
+
+        <p class="intro__desc">
+          Hệ thống quản lý đào tạo trực tuyến của Trường Đại học, nơi kết nối sinh viên với nhà trường
+          một cách nhanh chóng và thuận tiện. Vui lòng đăng nhập bằng tài khoản sinh viên để quản lý
+          thông tin học tập, tra cứu điểm và sử dụng các dịch vụ trực tuyến.
+        </p>
+
+        <div class="features">
+          <div class="feature">
+            <div class="feature__icon c-blue"><i class="fa-solid fa-chart-line"></i></div>
+            <div>
+              <h3>Kết quả học tập</h3>
+              <p>Tra cứu điểm, GPA từng học kỳ</p>
+            </div>
+          </div>
+          <div class="feature">
+            <div class="feature__icon c-green"><i class="fa-regular fa-calendar-days"></i></div>
+            <div>
+              <h3>Thời khóa biểu</h3>
+              <p>Lịch học, lịch thi cập nhật</p>
+            </div>
+          </div>
+          <div class="feature">
+            <div class="feature__icon c-orange"><i class="fa-solid fa-clipboard-list"></i></div>
+            <div>
+              <h3>Đăng ký học phần</h3>
+              <p>Đăng ký môn học trực tuyến</p>
+            </div>
+          </div>
+          <div class="feature">
+            <div class="feature__icon c-purple"><i class="fa-solid fa-credit-card"></i></div>
+            <div>
+              <h3>Học phí trực tuyến</h3>
+              <p>Thanh toán nhanh, minh bạch</p>
+            </div>
+          </div>
+        </div>
+
+        <ul class="commitments">
+          <li><i class="fa-solid fa-shield-halved"></i>Bảo mật tuyệt đối</li>
+          <li><i class="fa-solid fa-lock"></i>Thanh toán an toàn</li>
+          <li><i class="fa-solid fa-headset"></i>Hỗ trợ 24/7</li>
+          <li><i class="fa-solid fa-circle-check"></i>Xác nhận nhanh chóng</li>
+        </ul>
+      </section>
+
+      <!-- ========== CỘT PHẢI: FORM ĐĂNG NHẬP ========== -->
+      <section class="form-side">
+        <div class="form-head">
+          <div class="form-head__icon"><i class="fa-solid fa-lock"></i></div>
+          <h2>ĐĂNG NHẬP</h2>
+          <p>Sử dụng tài khoản do nhà trường cấp</p>
+        </div>
+
+        <form id="loginForm" class="login-form" novalidate>
+          <div class="field">
+            <label for="username">Email sinh viên hoặc mã sinh viên</label>
+            <div class="input-box">
+              <i class="fa-solid fa-user input-icon"></i>
+              <input type="text" id="username" name="username" autocomplete="username"
+                     placeholder="nguyen251210934@lms.utc.edu.vn" />
+            </div>
+            <small class="error" id="usernameError"></small>
+          </div>
+
+          <div class="field">
+            <label for="password">Mật khẩu</label>
+            <div class="input-box">
+              <i class="fa-solid fa-lock input-icon"></i>
+              <input type="password" id="password" name="password" autocomplete="current-password"
+                     placeholder="Nhập mật khẩu" />
+              <button type="button" class="toggle-pass" id="togglePass" aria-label="Hiện mật khẩu">
+                <i class="fa-regular fa-eye"></i>
+              </button>
+            </div>
+            <small class="error" id="passwordError"></small>
+          </div>
+
+          <div class="form-links">
+            <a href="#" id="forgotLink">Quên mật khẩu</a>
+            <a href="#" id="helpLink"><i class="fa-regular fa-circle-question"></i> Trợ giúp!</a>
+          </div>
+
+          <button type="submit" class="btn-primary" id="submitBtn">
+            <span class="btn-text">ĐĂNG NHẬP</span>
+            <i class="fa-solid fa-arrow-right-to-bracket"></i>
+          </button>
+
+          <div class="divider"><span>hoặc đăng nhập</span></div>
+
+          <button type="button" class="btn-microsoft" id="msBtn">
+            <svg class="ms-logo" viewBox="0 0 21 21" aria-hidden="true">
+              <rect x="0" y="0" width="10" height="10" fill="#F25022" />
+              <rect x="11" y="0" width="10" height="10" fill="#7FBA00" />
+              <rect x="0" y="11" width="10" height="10" fill="#00A4EF" />
+              <rect x="11" y="11" width="10" height="10" fill="#FFB900" />
+            </svg>
+            Đăng nhập với Microsoft
+          </button>
+        </form>
+
+        <p class="copyright">© 2026 Cổng thông tin sinh viên</p>
+      </section>
+    </div>
+  </main>
+
+  <!-- Thông báo nhỏ -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="data/students.js"></script>
+  <script src="app.js"></script>
+  <script src="login.js"></script>
+</body>
+</html>
