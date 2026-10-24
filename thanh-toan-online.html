@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thanh toán online | Quản lý sinh viên</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="tai-chinh.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- ========== SIDEBAR ========== -->
+    <aside class="sidebar">
+      <div class="sidebar__brand">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <span>StudentHub</span>
+      </div>
+
+      <nav class="sidebar__menu">
+        <a href="index.html" class="menu-item"><i class="fa-solid fa-newspaper"></i><span>Tin tức</span></a>
+        <a href="profile.html" class="menu-item"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+        <a href="hoc-tap.html" class="menu-item"><i class="fa-solid fa-book-open"></i><span>Học tập</span></a>
+        <a href="dormitory.html" class="menu-item"><i class="fa-solid fa-building"></i><span>Ký túc xá</span></a>
+        <a href="library.html" class="menu-item"><i class="fa-solid fa-book"></i><span>Thư viện</span></a>
+        <a href="lich-hoc.html" class="menu-item"><i class="fa-solid fa-calendar-days"></i><span>Lịch học</span></a>
+        <a href="hoc-phi.html" class="menu-item active"><i class="fa-solid fa-wallet"></i><span>Học phí</span></a>
+        <a href="#" class="menu-item"><i class="fa-solid fa-comments"></i><span>Phản hồi</span></a>
+      </nav>
+
+      <div class="sidebar__footer">
+        <a href="#" class="menu-item"><i class="fa-solid fa-gear"></i><span>Cài đặt</span></a>
+        <a href="#" class="menu-item logout"><i class="fa-solid fa-right-from-bracket"></i><span>Đăng xuất</span></a>
+      </div>
+    </aside>
+
+    <!-- ========== MAIN ========== -->
+    <div class="main">
+      <header class="navbar">
+        <form class="search" role="search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="search" placeholder="Tìm kiếm sinh viên, môn học, tài liệu..." />
+        </form>
+
+        <div class="navbar__right">
+          <button class="icon-btn" aria-label="Thông báo">
+            <i class="fa-regular fa-bell"></i><span class="badge">3</span>
+          </button>
+          <button class="icon-btn" aria-label="Tin nhắn">
+            <i class="fa-regular fa-envelope"></i>
+          </button>
+          <div class="user">
+            <img src="" alt="Ảnh đại diện" class="user__avatar" />
+            <div class="user__info">
+              <span class="user__name"></span>
+              <span class="user__role"></span>
+            </div>
+            <i class="fa-solid fa-chevron-down user__caret"></i>
+          </div>
+        </div>
+      </header>
+
+      <main class="content fin">
+        <h1 class="fin-title">TÀI CHÍNH SINH VIÊN</h1>
+
+        <nav class="fin-tabs" aria-label="Phân hệ tài chính">
+          <a href="hoc-phi.html"><i class="fa-solid fa-file-invoice-dollar"></i> Học phí</a>
+          <a href="thanh-toan-online.html" aria-current="page"><i class="fa-solid fa-qrcode"></i> Thanh toán online</a>
+        </nav>
+
+        <div class="pay-grid">
+          <!-- ========== CỘT TRÁI: HÓA ĐƠN ========== -->
+          <section class="box box--flush invoice">
+            <div class="box__head">
+              <h2><i class="fa-solid fa-file-invoice-dollar"></i> Hóa đơn cần thanh toán</h2>
+              <span class="status" id="invStatus">—</span>
+            </div>
+
+            <div class="invoice__amount" id="amountBox">
+              <span id="amountLabel">Số tiền cần thanh toán</span>
+              <b id="amountValue">0 đ</b>
+              <small id="amountNote">—</small>
+            </div>
+
+            <div class="invoice__body">
+              <div>
+                <p class="field-label">Chọn khoản thanh toán</p>
+                <div class="choice-list" id="choiceList"></div>
+              </div>
+
+              <table class="mini-table">
+                <tbody>
+                  <tr><td>Họ và tên</td><td id="invName">—</td></tr>
+                  <tr><td>Mã sinh viên</td><td id="invMsv">—</td></tr>
+                  <tr><td>Lớp</td><td id="invClass">—</td></tr>
+                  <tr><td>Tổng phải nộp toàn khóa</td><td id="invPayable">—</td></tr>
+                  <tr><td>Đã nộp</td><td id="invPaid">—</td></tr>
+                </tbody>
+              </table>
+
+              <div>
+                <p class="field-label">Nội dung chuyển khoản (ghi chính xác)</p>
+                <div class="copy-row">
+                  <code id="transferContent">—</code>
+                  <button type="button" class="copy-btn" id="copyBtn"><i class="fa-regular fa-copy"></i> Sao chép</button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ========== CỘT PHẢI: CỔNG THANH TOÁN QR ========== -->
+          <section class="box box--flush gateway">
+            <div class="box__head">
+              <h2><i class="fa-solid fa-qrcode"></i> Cổng thanh toán QR Code</h2>
+              <span><i class="fa-solid fa-lock"></i> Bảo mật SSL</span>
+            </div>
+
+            <div class="gateway__body">
+              <div>
+                <label class="field-label" for="methodSelect">Phương thức thanh toán</label>
+                <select class="select" id="methodSelect"></select>
+              </div>
+              <div class="method-chips" id="methodChips" aria-label="Chọn nhanh phương thức"></div>
+
+              <div class="qr-card" id="qrCard">
+                <div class="qr-card__brand" id="qrBrand">—</div>
+                <div class="qr-frame" id="qrFrame"></div>
+                <div class="qr-card__amount" id="qrAmount">0 đ</div>
+                <p class="qr-card__note">Mã QR minh họa · Quét bằng ứng dụng ngân hàng / ví điện tử</p>
+                <div class="qr-overlay" id="qrOverlay" hidden>
+                  <div><i class="fa-solid fa-circle-check"></i>Bạn đã hoàn thành học phí,<br />không có khoản cần thanh toán.</div>
+                </div>
+              </div>
+
+              <ol class="steps">
+                <li>Mở ứng dụng ngân hàng hoặc ví điện tử và chọn quét mã QR.</li>
+                <li>Kiểm tra số tiền và nội dung chuyển khoản <b id="stepContent">—</b>.</li>
+                <li>Hoàn tất giao dịch rồi bấm "Xác nhận đã chuyển khoản" bên dưới.</li>
+              </ol>
+
+              <button type="button" class="btn btn--primary" id="payBtn">
+                <i class="fa-solid fa-shield-halved"></i> Xác nhận đã chuyển khoản
+              </button>
+              <p class="secure-note"><i class="fa-solid fa-lock"></i> Giao dịch được ghi nhận vào trang Học phí ngay sau khi xác nhận</p>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Popup xác nhận / xử lý / thành công -->
+  <dialog class="modal" id="payModal" aria-labelledby="payTitle">
+    <form method="dialog">
+      <div class="modal__head">
+        <div class="modal__icon"><i class="fa-solid fa-money-check-dollar"></i></div>
+        <div><h3 id="payTitle">Xác nhận thanh toán</h3><p id="paySub">Kiểm tra thông tin trước khi xác nhận</p></div>
+      </div>
+      <div class="modal__body" id="payBody"></div>
+      <div class="modal__actions" id="payActions"></div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="data/students.js"></script>
+  <script src="app.js"></script>
+  <script src="finance.js"></script>
+  <script src="thanh-toan-online.js"></script>
+</body>
+</html>
