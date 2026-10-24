@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!student) {
     showToast("Không tìm thấy dữ liệu sinh viên. Vui lòng đăng nhập lại.", "error");
-    setTimeout(() => (window.location.href = "login.html"), 1500);
+    setTimeout(() => (window.location.href = pageUrl("dang-nhap")), 1500);
     return;
   }
 

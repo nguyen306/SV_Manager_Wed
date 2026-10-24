@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
           })
           .join("")
       : `<tr><td colspan="6" class="empty-row">Chưa có giao dịch online. ${
-          fin.done ? "" : '<a href="thanh-toan-online.html">Thanh toán ngay</a>'
+          fin.done ? "" : `<a href="${pageUrl("thanh-toan")}">Thanh toán ngay</a>`
         }</td></tr>`;
 
     return fin;
@@ -144,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
              ${isDebt ? "Bạn không có khoản nợ học phí nào." : "Bạn không có khoản học phí thừa."}</p>`;
       $("detailActions").innerHTML =
         `<button type="submit" class="btn btn--ghost">Đóng</button>` +
-        (isDebt && rows.length ? `<a href="thanh-toan-online.html" class="btn btn--pay"><i class="fa-solid fa-qrcode"></i> Thanh toán</a>` : "");
+        (isDebt && rows.length ? `<a href="${pageUrl("thanh-toan")}" class="btn btn--pay"><i class="fa-solid fa-qrcode"></i> Thanh toán</a>` : "");
       modal.showModal();
     })
   );
