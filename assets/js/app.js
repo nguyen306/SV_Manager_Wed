@@ -1,42 +1,77 @@
 /* ========== DÙNG CHUNG CHO MỌI TRANG ==========
-   Dữ liệu sinh viên lấy từ data/students.js (sinh từ data/students.xlsx).
-   Phiên đăng nhập lưu mã sinh viên trong localStorage (khóa SESSION_KEY), mọi trang
-   đọc cùng khóa này nên thông tin luôn đồng bộ khi chuyển trang.
+   Dữ liệu sinh viên lấy từ data/students.js (sinh từ data/students.xlsx), cộng với các thay đổi
+   do Admin thực hiện (thêm / sửa / xóa / khóa tài khoản) lưu trong localStorage (ACCOUNTS_KEY).
+   Phiên đăng nhập lưu tên đăng nhập (mã SV, hoặc tài khoản giảng viên / admin) trong SESSION_KEY;
+   mọi trang đọc cùng khóa này nên thông tin luôn đồng bộ khi chuyển trang.
 
    Mỗi trang khai báo trên thẻ <body>:
      data-root="../../"  đường dẫn từ trang đó về thư mục gốc dự án ("" với index.html ở gốc)
-     data-page="hoc-tap" khóa trang trong PAGES (để tô sáng menu và quay lại sau đăng nhập)
+     data-page="hoc-tap" khóa trang trong PAGES (để tô sáng menu, phân quyền và quay lại sau đăng nhập)
    và đặt 2 chỗ trống <aside data-layout="sidebar"> / <header data-layout="navbar">,
-   app.js sẽ tự vẽ Sidebar + Navbar với đường dẫn đúng cho mọi thư mục. */
+   app.js sẽ tự vẽ Sidebar + Navbar theo vai trò của người đang đăng nhập. */
 const SESSION_KEY = "currentStudentId";
-// Mật khẩu chung cho mọi tài khoản (bản demo, chưa có server xác thực)
+const ACCOUNTS_KEY = "accounts:store";
+// Mật khẩu mặc định của sinh viên (bản demo, chưa có server xác thực); Admin có thể đặt lại từng SV
 const DEMO_PASSWORD = "123";
 
-/* ---------- Danh sách trang (một nơi duy nhất khai báo đường dẫn) ---------- */
-const PAGES = {
-  "trang-chu": "index.html",
-  "dang-nhap": "features/dang-nhap/login.html",
-  profile: "features/profile/profile.html",
-  "hoc-tap": "features/hoc-tap/hoc-tap.html",
-  "lich-hoc": "features/lich-hoc/lich-hoc.html",
-  "ky-tuc-xa": "features/ky-tuc-xa/dormitory.html",
-  "thu-vien": "features/thu-vien/library.html",
-  "hoc-phi": "features/tai-chinh/hoc-phi.html",
-  "thanh-toan": "features/tai-chinh/thanh-toan-online.html",
-  "phan-hoi": "features/phan-hoi/phan-hoi.html",
+/* ---------- Vai trò ---------- */
+const ROLES = {
+  student: { label: "Sinh viên", home: "trang-chu", color: "#4f46e5" },
+  teacher: { label: "Giảng viên", home: "gv-lich-day", color: "#0e7490" },
+  admin: { label: "Quản trị viên", home: "qt-dashboard", color: "#b91c1c" },
 };
 
-// Menu bên trái (key trùng với PAGES; menu "Học phí" sáng cả khi ở trang Thanh toán online)
-const MENU = [
-  { key: "trang-chu", label: "Trang chủ", icon: "fa-house" },
-  { key: "profile", label: "Profile", icon: "fa-user" },
-  { key: "hoc-tap", label: "Học tập", icon: "fa-book-open" },
-  { key: "ky-tuc-xa", label: "Ký túc xá", icon: "fa-building" },
-  { key: "thu-vien", label: "Thư viện", icon: "fa-book" },
-  { key: "lich-hoc", label: "Lịch học", icon: "fa-calendar-days" },
-  { key: "hoc-phi", label: "Học phí", icon: "fa-wallet", also: ["thanh-toan"] },
-  { key: "phan-hoi", label: "Phản hồi", icon: "fa-comments" },
-];
+/* ---------- Danh sách trang: đường dẫn + vai trò được phép mở ---------- */
+const PAGES = {
+  "trang-chu": { path: "index.html", roles: ["student"], label: "Trang chủ" },
+  "dang-nhap": { path: "features/dang-nhap/login.html", roles: [], label: "Đăng nhập" },
+  profile: { path: "features/profile/profile.html", roles: ["student"], label: "Profile" },
+  "hoc-tap": { path: "features/hoc-tap/hoc-tap.html", roles: ["student"], label: "Học tập" },
+  "lich-hoc": { path: "features/lich-hoc/lich-hoc.html", roles: ["student"], label: "Lịch học" },
+  "ky-tuc-xa": { path: "features/ky-tuc-xa/dormitory.html", roles: ["student"], label: "Ký túc xá" },
+  "thu-vien": { path: "features/thu-vien/library.html", roles: ["student"], label: "Thư viện" },
+  "hoc-phi": { path: "features/tai-chinh/hoc-phi.html", roles: ["student"], label: "Học phí" },
+  "thanh-toan": { path: "features/tai-chinh/thanh-toan-online.html", roles: ["student"], label: "Thanh toán online" },
+  "phan-hoi": { path: "features/phan-hoi/phan-hoi.html", roles: ["student"], label: "Phản hồi" },
+  // Giảng viên
+  "gv-lich-day": { path: "features/giang-vien/lich-day.html", roles: ["teacher"], label: "Lịch dạy" },
+  "gv-dang-ky-phong": { path: "features/giang-vien/dang-ky-phong.html", roles: ["teacher"], label: "Đăng ký phòng & ca dạy" },
+  "gv-ren-luyen": { path: "features/giang-vien/ren-luyen.html", roles: ["teacher"], label: "Điểm rèn luyện" },
+  "gv-lop-hoc-phan": { path: "features/giang-vien/lop-hoc-phan.html", roles: ["teacher"], label: "Lớp học phần" },
+  "gv-hoc-vu": { path: "features/giang-vien/hoc-vu.html", roles: ["teacher"], label: "Học vụ" },
+  // Quản trị viên
+  "qt-dashboard": { path: "features/quan-tri/dashboard.html", roles: ["admin"], label: "Dashboard" },
+  "qt-tai-khoan": { path: "features/quan-tri/tai-khoan.html", roles: ["admin"], label: "Tài khoản & phân quyền" },
+  "qt-phan-hoi": { path: "features/quan-tri/phan-hoi.html", roles: ["admin"], label: "Quản trị phản hồi" },
+  "qt-tai-chinh": { path: "features/quan-tri/tai-chinh.html", roles: ["admin"], label: "Quản lý tài chính" },
+};
+
+// Menu bên trái theo vai trò (key trùng PAGES; "also": các trang con cũng tô sáng mục này)
+const MENUS = {
+  student: [
+    { key: "trang-chu", label: "Trang chủ", icon: "fa-house" },
+    { key: "profile", label: "Profile", icon: "fa-user" },
+    { key: "hoc-tap", label: "Học tập", icon: "fa-book-open" },
+    { key: "ky-tuc-xa", label: "Ký túc xá", icon: "fa-building" },
+    { key: "thu-vien", label: "Thư viện", icon: "fa-book" },
+    { key: "lich-hoc", label: "Lịch học", icon: "fa-calendar-days" },
+    { key: "hoc-phi", label: "Học phí", icon: "fa-wallet", also: ["thanh-toan"] },
+    { key: "phan-hoi", label: "Phản hồi", icon: "fa-comments" },
+  ],
+  teacher: [
+    { key: "gv-lich-day", label: "Lịch dạy", icon: "fa-calendar-week" },
+    { key: "gv-dang-ky-phong", label: "Đăng ký phòng", icon: "fa-door-open" },
+    { key: "gv-lop-hoc-phan", label: "Lớp học phần", icon: "fa-chalkboard-user" },
+    { key: "gv-ren-luyen", label: "Điểm rèn luyện", icon: "fa-star-half-stroke" },
+    { key: "gv-hoc-vu", label: "Học vụ", icon: "fa-comments" },
+  ],
+  admin: [
+    { key: "qt-dashboard", label: "Dashboard", icon: "fa-chart-pie" },
+    { key: "qt-tai-khoan", label: "Tài khoản", icon: "fa-users-gear" },
+    { key: "qt-phan-hoi", label: "Phản hồi", icon: "fa-inbox" },
+    { key: "qt-tai-chinh", label: "Tài chính", icon: "fa-sack-dollar" },
+  ],
+};
 
 const ROOT = document.body.dataset.root || "";
 const CURRENT_PAGE = document.body.dataset.page || "";
@@ -44,7 +79,7 @@ const IS_LOGIN_PAGE = CURRENT_PAGE === "dang-nhap";
 
 // Đường dẫn tới một trang, tính từ trang đang mở. VD: pageUrl("lich-hoc") -> "../lich-hoc/lich-hoc.html"
 function pageUrl(key, suffix = "") {
-  return ROOT + (PAGES[key] || PAGES["trang-chu"]) + suffix;
+  return ROOT + (PAGES[key] || PAGES["trang-chu"]).path + suffix;
 }
 
 function storageGet(key) {
@@ -56,23 +91,133 @@ function storageSet(key, value) {
 function storageRemove(key) {
   try { localStorage.removeItem(key); } catch { /* bỏ qua */ }
 }
+function readJSON(key, fallback) {
+  try {
+    const v = JSON.parse(storageGet(key));
+    return v ?? fallback;
+  } catch {
+    return fallback;
+  }
+}
+function writeJSON(key, value) {
+  return storageSet(key, JSON.stringify(value));
+}
+
+/* ---------- Kho tài khoản ----------
+   students.added   : SV do Admin thêm (không có trong Excel)
+   students.edited  : { msv: {hoTen, lop, email, sdt} } sửa đè lên dữ liệu Excel
+   students.deleted : [msv] SV đã xóa
+   students.locked  : [msv] SV bị khóa đăng nhập
+   students.passwords: { msv: "mật khẩu mới" } (mặc định DEMO_PASSWORD)
+   staff            : tài khoản giảng viên / admin                                       */
+const DEFAULT_STAFF = [
+  {
+    username: "giangvien", password: "1234", role: "teacher", name: "Giảng viên Khoa CNTT", active: true,
+    // Phân công giảng dạy mẫu: các môn này ở cả 4 lớp, lịch lấy từ thời khóa biểu trong Excel
+    subjects: ["Lập trình hướng đối tượng", "Cấu trúc dữ liệu và giải thuật", "Lập trình Web"],
+    classes: ["Công nghệ thông tin 1 K66", "Công nghệ thông tin 2 K66", "Công nghệ thông tin 3 K66", "Khoa học máy tính K66"],
+  },
+  { username: "admin", password: "admin", role: "admin", name: "Quản trị hệ thống", active: true, subjects: [], classes: [] },
+];
+
+function loadAccounts() {
+  const store = readJSON(ACCOUNTS_KEY, null) || {};
+  const st = store.students || {};
+  return {
+    students: {
+      added: st.added || [],
+      edited: st.edited || {},
+      deleted: st.deleted || [],
+      locked: st.locked || [],
+      passwords: st.passwords || {},
+    },
+    staff: Array.isArray(store.staff) ? store.staff : DEFAULT_STAFF.map((x) => ({ ...x })),
+  };
+}
+
+let studentsCache = null;
+function saveAccounts(store) {
+  studentsCache = null;
+  return writeJSON(ACCOUNTS_KEY, store);
+}
+
+const majorOf = (lop) => String(lop || "").replace(/\s*\d*\s*K\d+$/, "").trim();
+
+// Danh sách sinh viên hiện hành = Excel - đã xóa + sửa đổi + SV thêm mới
+function getStudents() {
+  if (studentsCache) return studentsCache;
+  const { students: st } = loadAccounts();
+  const deleted = new Set(st.deleted);
+  const base = (window.STUDENTS || [])
+    .filter((s) => !deleted.has(s.msv))
+    .map((s) => {
+      const e = st.edited[s.msv];
+      return e ? { ...s, ...e, nganh: majorOf(e.lop || s.lop) } : s;
+    });
+  const added = st.added
+    .filter((s) => !deleted.has(s.msv))
+    .map((s) => ({ ngaySinh: null, diem: {}, gpa: null, ...s, nganh: majorOf(s.lop), addedByAdmin: true }));
+  studentsCache = [...base, ...added];
+  return studentsCache;
+}
 
 function findStudent(idOrEmail) {
   const key = String(idOrEmail || "").trim().toLowerCase();
-  return (window.STUDENTS || []).find(
-    (s) => s.msv === key || s.email.toLowerCase() === key
-  );
+  return getStudents().find((s) => s.msv === key || String(s.email || "").toLowerCase() === key);
+}
+
+function findStaff(username) {
+  const key = String(username || "").trim().toLowerCase();
+  return loadAccounts().staff.find((s) => s.username.toLowerCase() === key);
+}
+
+function isStudentLocked(msv) {
+  return loadAccounts().students.locked.includes(msv);
+}
+
+/* Đăng nhập: trả về { ok, user } hoặc { ok:false, reason: "not-found" | "locked" | "wrong-password" } */
+function authenticate(id, password) {
+  const staff = findStaff(id);
+  if (staff) {
+    if (!staff.active) return { ok: false, reason: "locked" };
+    return password === staff.password
+      ? { ok: true, user: { id: staff.username, role: staff.role } }
+      : { ok: false, reason: "wrong-password" };
+  }
+  const student = findStudent(id);
+  if (!student) return { ok: false, reason: "not-found" };
+  if (isStudentLocked(student.msv)) return { ok: false, reason: "locked" };
+  const pass = loadAccounts().students.passwords[student.msv] || DEMO_PASSWORD;
+  return password === pass
+    ? { ok: true, user: { id: student.msv, role: "student" } }
+    : { ok: false, reason: "wrong-password" };
+}
+
+// Người đang đăng nhập: { id, role, name, student? , staff? } hoặc null
+function getCurrentUser() {
+  const id = storageGet(SESSION_KEY);
+  if (!id) return null;
+  const staff = findStaff(id);
+  if (staff) return staff.active ? { id: staff.username, role: staff.role, name: staff.name, staff } : null;
+  const student = findStudent(id);
+  if (!student || isStudentLocked(student.msv)) return null;
+  return { id: student.msv, role: "student", name: toTitleCase(student.hoTen), student };
 }
 
 function getCurrentStudent() {
-  const msv = storageGet(SESSION_KEY);
-  return msv ? findStudent(msv) || null : null;
+  const user = getCurrentUser();
+  return user && user.role === "student" ? user.student : null;
 }
 
-// Đăng nhập bằng mã sinh viên (hoặc email) + mật khẩu; trả về sinh viên hoặc null
-function authenticate(idOrEmail, password) {
-  const student = findStudent(idOrEmail);
-  return student && password === DEMO_PASSWORD ? student : null;
+// Trang chủ của vai trò (Trang chủ SV / Lịch dạy GV / Dashboard Admin)
+function homeUrl(role) {
+  return pageUrl((ROLES[role] || ROLES.student).home);
+}
+
+// Năm học hiện tại của khóa K66 (năm học bắt đầu tháng 9; Năm 1 = 2025_2026), giới hạn 1..4
+function currentStudyYear(date = new Date()) {
+  const start = date.getMonth() >= 8 ? date.getFullYear() : date.getFullYear() - 1;
+  return Math.min(4, Math.max(1, start - 2025 + 1));
 }
 
 // Xếp loại học lực theo điểm trung bình hệ 4 (Quy chế đào tạo đại học, TT 08/2021/TT-BGDĐT)
@@ -86,6 +231,18 @@ function classify(gpa4) {
   return { label: "Kém", cls: "rank--poor" };
 }
 
+// Xếp loại điểm rèn luyện (thang 100, TT 16/2015/TT-BGDĐT)
+function classifyConduct(score) {
+  if (score == null || score === "" || Number.isNaN(Number(score))) return { label: "Chưa chấm", cls: "cd--none" };
+  const s = Number(score);
+  if (s >= 90) return { label: "Xuất sắc", cls: "cd--excellent" };
+  if (s >= 80) return { label: "Tốt", cls: "cd--good" };
+  if (s >= 65) return { label: "Khá", cls: "cd--fair" };
+  if (s >= 50) return { label: "Trung bình", cls: "cd--average" };
+  if (s >= 35) return { label: "Yếu", cls: "cd--weak" };
+  return { label: "Kém", cls: "cd--poor" };
+}
+
 // Các môn sinh viên phải học phụ đạo tối (điểm môn < 2.0), lấy từ sheet "Danh Sách SV Phụ Đạo Tối"
 function getTutoring(msv) {
   return (window.TUTORING_STUDENTS || []).filter((t) => t.msv === msv);
@@ -96,18 +253,18 @@ function getAvatar(msv) {
 }
 
 // Ảnh mặc định: chữ cái đầu của tên, vẽ bằng SVG (không cần tải ảnh ngoài)
-function initialsAvatar(name) {
-  const parts = name.trim().split(/\s+/);
-  const initials = (parts.length > 1 ? parts[parts.length - 2][0] : "") + parts[parts.length - 1][0];
+function initialsAvatar(name, color = "#4f46e5") {
+  const parts = String(name || "?").trim().split(/\s+/);
+  const initials = ((parts.length > 1 ? parts[parts.length - 2][0] : "") + parts[parts.length - 1][0]).toUpperCase();
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">
-    <rect width="200" height="200" fill="#4f46e5"/>
+    <rect width="200" height="200" fill="${color}"/>
     <text x="50%" y="54%" font-family="Segoe UI, Arial" font-size="80" font-weight="700"
       fill="#fff" text-anchor="middle" dominant-baseline="middle">${initials}</text></svg>`;
   return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
 }
 
 function toTitleCase(name) {
-  return name.toLowerCase().replace(/(^|\s)\S/g, (c) => c.toUpperCase());
+  return String(name || "").toLowerCase().replace(/(^|\s)\S/g, (c) => c.toUpperCase());
 }
 
 function logout() {
@@ -116,35 +273,46 @@ function logout() {
 }
 
 /* ---------- Bảo vệ trang ----------
-   Chưa đăng nhập (hoặc mã SV không còn trong dữ liệu) thì quay về trang đăng nhập,
-   kèm ?next=<khóa trang> để đăng nhập xong trở lại đúng trang đang mở. */
-if (!IS_LOGIN_PAGE && !getCurrentStudent()) {
-  storageRemove(SESSION_KEY);
-  location.replace(pageUrl("dang-nhap", `?next=${encodeURIComponent(CURRENT_PAGE + location.hash)}`));
+   - Chưa đăng nhập (hoặc tài khoản đã bị xóa / khóa): về trang đăng nhập kèm ?next=<khóa trang>.
+   - Đăng nhập nhưng vai trò không được mở trang này: về trang chủ của vai trò đó. */
+const CURRENT_USER = IS_LOGIN_PAGE ? null : getCurrentUser();
+if (!IS_LOGIN_PAGE) {
+  const page = PAGES[CURRENT_PAGE];
+  if (!CURRENT_USER) {
+    storageRemove(SESSION_KEY);
+    location.replace(pageUrl("dang-nhap", `?next=${encodeURIComponent(CURRENT_PAGE + location.hash)}`));
+  } else if (page && !page.roles.includes(CURRENT_USER.role)) {
+    location.replace(homeUrl(CURRENT_USER.role));
+  }
 }
 
 /* Đăng nhập / đăng xuất / đổi tài khoản ở tab khác: tải lại để mọi trang cùng một người dùng */
 window.addEventListener("storage", (e) => {
   if (e.key === SESSION_KEY && !IS_LOGIN_PAGE) location.reload();
+  if (e.key === ACCOUNTS_KEY) studentsCache = null;
 });
 
 /* ---------- Vẽ Sidebar + Navbar ----------
    Chạy ngay khi app.js được nạp (app.js đặt cuối <body>), trước script riêng của trang,
    nên các trang vẫn tìm thấy .user__name, .user__avatar... như trước. */
 (function renderLayout() {
+  const user = CURRENT_USER;
+  const role = user ? user.role : "student";
+
   const sidebar = document.querySelector('[data-layout="sidebar"]');
   if (sidebar) {
-    sidebar.className = "sidebar";
+    sidebar.className = `sidebar sidebar--${role}`;
     const item = (m) => {
-      const active = m.key && (m.key === CURRENT_PAGE || (m.also || []).includes(CURRENT_PAGE));
-      return `<a href="${m.key ? pageUrl(m.key) : "#"}" class="menu-item${active ? " active" : ""}"${active ? ' aria-current="page"' : ""}>
+      const active = m.key === CURRENT_PAGE || (m.also || []).includes(CURRENT_PAGE);
+      return `<a href="${pageUrl(m.key)}" class="menu-item${active ? " active" : ""}"${active ? ' aria-current="page"' : ""}>
         <i class="fa-solid ${m.icon}"></i><span>${m.label}</span></a>`;
     };
     sidebar.innerHTML = `
-      <a href="${pageUrl("trang-chu")}" class="sidebar__brand">
+      <a href="${homeUrl(role)}" class="sidebar__brand">
         <i class="fa-solid fa-graduation-cap"></i><span>StudentHub</span>
       </a>
-      <nav class="sidebar__menu">${MENU.map(item).join("")}</nav>
+      ${role !== "student" ? `<div class="sidebar__role"><i class="fa-solid fa-shield-halved"></i><span>${ROLES[role].label}</span></div>` : ""}
+      <nav class="sidebar__menu">${MENUS[role].map(item).join("")}</nav>
       <div class="sidebar__footer">
         <a href="#" class="menu-item"><i class="fa-solid fa-gear"></i><span>Cài đặt</span></a>
         <a href="#" class="menu-item logout"><i class="fa-solid fa-right-from-bracket"></i><span>Đăng xuất</span></a>
@@ -166,7 +334,7 @@ window.addEventListener("storage", (e) => {
       <div class="navbar__right">
         <button class="icon-btn" aria-label="Thông báo"><i class="fa-regular fa-bell"></i><span class="badge">3</span></button>
         <button class="icon-btn" aria-label="Tin nhắn"><i class="fa-regular fa-envelope"></i></button>
-        <a class="user" href="${pageUrl("profile")}" title="Thông tin cá nhân">
+        <a class="user" href="${role === "student" ? pageUrl("profile") : homeUrl(role)}" title="${role === "student" ? "Thông tin cá nhân" : ROLES[role].label}">
           <img src="" alt="Ảnh đại diện" class="user__avatar" />
           <div class="user__info"><span class="user__name"></span><span class="user__role"></span></div>
           <i class="fa-solid fa-chevron-down user__caret"></i>
@@ -174,11 +342,12 @@ window.addEventListener("storage", (e) => {
       </div>`;
     navbar.querySelector(".search").addEventListener("submit", (e) => e.preventDefault());
 
-    const student = getCurrentStudent();
-    if (student) {
-      navbar.querySelector(".user__name").textContent = toTitleCase(student.hoTen);
-      navbar.querySelector(".user__role").textContent = `MSSV: ${student.msv}`;
-      navbar.querySelector(".user__avatar").src = getAvatar(student.msv) || initialsAvatar(student.hoTen);
+    if (user) {
+      navbar.querySelector(".user__name").textContent = user.name;
+      navbar.querySelector(".user__role").textContent =
+        role === "student" ? `MSSV: ${user.id}` : `${ROLES[role].label} · ${user.id}`;
+      navbar.querySelector(".user__avatar").src =
+        (role === "student" && getAvatar(user.id)) || initialsAvatar(user.name, ROLES[role].color);
     }
   }
 })();

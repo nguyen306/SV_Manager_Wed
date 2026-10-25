@@ -232,12 +232,45 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("panel-quyet-dinh").innerHTML = emptyState("fa-file-lines", "Chưa có quyết định", noData);
   document.getElementById("panel-van-bang").innerHTML = emptyState("fa-id-card", "Chưa có văn bằng - chứng chỉ", noData);
   document.getElementById("panel-canh-bao").innerHTML = emptyState("fa-bell", "Chưa có dữ liệu cảnh báo học vụ", noData);
-  document.getElementById("panel-ren-luyen").innerHTML = emptyState("fa-star", "Chưa có điểm rèn luyện", noData);
+
+  /* ========== TAB: ĐIỂM RÈN LUYỆN (giảng viên chấm ở trang Điểm rèn luyện) ========== */
+  function renderConduct() {
+    const scores = (() => {
+      try { return JSON.parse(storageGet("conduct:scores")) || {}; } catch { return {}; }
+    })();
+    const rows = [1, 2, 3, 4]
+      .map((y) => ({ y, rec: scores[`${y}|${student.msv}`] }))
+      .filter((x) => x.rec);
+    const panel = document.getElementById("panel-ren-luyen");
+    if (!rows.length) {
+      panel.innerHTML = emptyState("fa-star", "Chưa có điểm rèn luyện", "Giảng viên phụ trách lớp chưa chấm điểm rèn luyện cho bạn.");
+      return;
+    }
+    const avg = rows.reduce((sum, x) => sum + x.rec.score, 0) / rows.length;
+    panel.innerHTML = `
+      <section class="box box--flush">
+        <div class="semester__head">Điểm rèn luyện<span>Trung bình ${avg.toFixed(1)} · ${classifyConduct(avg).label}</span></div>
+        <div class="table-wrap"><table class="data-table">
+          <thead><tr><th>Năm học</th><th>Điểm</th><th>Xếp loại</th><th class="text-left">Nhận xét</th><th>Người chấm</th><th>Cập nhật</th></tr></thead>
+          <tbody>${rows
+            .map(({ y, rec }) => {
+              const rank = classifyConduct(rec.score);
+              return `<tr><td class="nowrap">${yearLabel(y)}</td><td class="score">${rec.score}</td>
+                <td><span class="pill ${rank.cls}">${rank.label}</span></td>
+                <td class="text-left">${esc(rec.note || "—")}</td><td>${esc(rec.byName || rec.by)}</td>
+                <td class="nowrap">${new Date(rec.at).toLocaleDateString("vi-VN")}</td></tr>`;
+            })
+            .join("")}</tbody>
+        </table></div>
+      </section>
+      <div class="notice"><i class="fa-solid fa-circle-info"></i>Thang 100: Xuất sắc ≥ 90 · Tốt ≥ 80 · Khá ≥ 65 · Trung bình ≥ 50 · Yếu ≥ 35 · Kém &lt; 35.</div>`;
+  }
+  renderConduct();
 
   /* ========== TAB: CHƯƠNG TRÌNH HỌC ========== */
   // Danh sách chương trình lấy từ các lớp có trong file, VD "Công nghệ thông tin 2 K66" -> "K66 - Công nghệ thông tin"
   const programName = (s) => `${(s.lop.match(/K\d+/) || [""])[0]} - ${s.nganh}`;
-  const programs = [...new Set((window.STUDENTS || []).map(programName))].sort();
+  const programs = [...new Set(getStudents().map(programName))].sort();
   const programSelect = document.getElementById("programSelect");
   const courseSearch = document.getElementById("courseSearch");
   programSelect.innerHTML = programs
@@ -280,6 +313,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const subject = subjects.find((s) => s.name === btn.dataset.name);
     if (!subject) return;
     const r = resultByName.get(subject.name);
+    // Điểm thành phần do giảng viên nhập ở trang Lớp học phần (nếu có)
+    const parts = (() => {
+      try { return (JSON.parse(storageGet("course:grades")) || {})[`${subject.name}|${student.msv}`]; } catch { return null; }
+    })();
     document.getElementById("modalTitle").textContent = subject.name;
     document.getElementById("modalBody").innerHTML = `
       <dl class="detail-list">
@@ -291,6 +328,12 @@ document.addEventListener("DOMContentLoaded", () => {
              <div><dt>Điểm chữ</dt><dd>${r.letter}</dd></div>
              <div><dt>Đánh giá</dt><dd>${passPill(r)}</dd></div>`
           : `<div><dt>Kết quả</dt><dd><span class="pill pill--muted">Chưa có điểm</span></dd></div>`}
+        ${parts
+          ? `<div><dt>Điểm giữa kỳ (GV nhập)</dt><dd>${parts.mid ?? "—"}</dd></div>
+             <div><dt>Điểm cuối kỳ (GV nhập)</dt><dd>${parts.final ?? "—"}</dd></div>
+             <div><dt>Tổng kết thành phần</dt><dd>${parts.total != null ? `<b>${fmt(parts.total, 1)}</b> <small>(30% GK + 70% CK)</small>` : "—"}</dd></div>
+             <div><dt>Giảng viên</dt><dd>${esc(parts.byName || parts.by)} · ${new Date(parts.at).toLocaleDateString("vi-VN")}</dd></div>`
+          : ""}
       </dl>`;
     modal.showModal();
   });
@@ -310,6 +353,7 @@ document.addEventListener("DOMContentLoaded", () => {
   );
   window.addEventListener("hashchange", () => activate(location.hash.slice(1)));
 
+  window.addEventListener("storage", (e) => { if (e.key === "conduct:scores") renderConduct(); });
   renderTranscript();
   renderDebt();
   renderRegistration();
