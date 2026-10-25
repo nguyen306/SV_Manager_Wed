@@ -229,6 +229,142 @@ a { text-decoration: none; color: inherit; }
   place-items: center;
 }
 
+.badge[hidden] { display: none; }
+
+/* Thông báo: bảng xổ xuống từ chuông */
+.notify { position: relative; }
+.notify-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: -8px;
+  z-index: 50;
+  width: 370px;
+  max-height: min(480px, 75vh);
+  display: flex;
+  flex-direction: column;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+  overflow: hidden;
+}
+.notify-panel[hidden] { display: none; }
+.notify-panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 15px;
+}
+.notify-panel__all {
+  border: none;
+  background: none;
+  color: var(--primary);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.notify-panel__all:disabled { color: var(--muted); cursor: default; }
+.notify-list { list-style: none; overflow-y: auto; }
+.notify-list li + li { border-top: 1px solid #f1f3f8; }
+.notify-item {
+  width: 100%;
+  display: flex;
+  gap: 12px;
+  padding: 12px 16px;
+  border: none;
+  background: var(--white);
+  font: inherit;
+  text-align: left;
+  color: var(--text);
+  cursor: pointer;
+}
+.notify-item:hover { background: var(--bg); }
+.notify-item.is-unread { background: var(--primary-light); }
+.notify-item.is-unread:hover { background: #e0e7ff; }
+.notify-item__icon {
+  flex: 0 0 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #e0e7ff;
+  color: var(--primary);
+}
+.notify-item__icon--success { background: #dcfce7; color: #15803d; }
+.notify-item__icon--error { background: #fee2e2; color: #b91c1c; }
+.notify-item__text { display: flex; flex-direction: column; gap: 2px; min-width: 0; font-size: 13px; line-height: 1.4; }
+.notify-item__text b { font-size: 13.5px; }
+.notify-item__text span { color: #4b5563; }
+.notify-item__text small { color: var(--muted); font-size: 11.5px; }
+.notify-empty { padding: 28px 16px; text-align: center; color: var(--muted); font-size: 13.5px; }
+
+/* Thông báo: popup góc phải màn hình */
+.notify-stack {
+  position: fixed;
+  top: calc(var(--navbar-h) + 12px);
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(380px, calc(100vw - 32px));
+}
+.notify-pop {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 14px 14px 16px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--primary);
+  border-radius: 12px;
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.18);
+  animation: notify-in 0.3s ease;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.notify-pop--success { border-left-color: #16a34a; }
+.notify-pop--error { border-left-color: #dc2626; }
+.notify-pop.is-leaving { opacity: 0; transform: translateX(24px); }
+.notify-pop__icon {
+  flex: 0 0 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #e0e7ff;
+  color: var(--primary);
+}
+.notify-pop--success .notify-pop__icon { background: #dcfce7; color: #15803d; }
+.notify-pop--error .notify-pop__icon { background: #fee2e2; color: #b91c1c; }
+.notify-pop__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  border: none;
+  background: none;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #4b5563;
+  text-align: left;
+  cursor: pointer;
+}
+.notify-pop__body b { font-size: 14px; color: var(--text); }
+.notify-pop__close {
+  border: none;
+  background: none;
+  color: var(--muted);
+  font-size: 15px;
+  cursor: pointer;
+}
+.notify-pop__close:hover { color: var(--text); }
+@keyframes notify-in { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
+
 /* Thông tin tài khoản */
 .user {
   display: flex;
@@ -308,4 +444,10 @@ a { text-decoration: none; color: inherit; }
   .navbar__right .icon-btn:nth-child(2) { display: none; }
   .user { margin-left: 0; padding: 0; }
   .content { padding: 16px 16px 84px; }
+  .notify-panel { position: fixed; top: calc(var(--navbar-h) + 6px); left: 16px; right: 16px; width: auto; }
+  .notify-stack { right: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notify-pop { animation: none; transition: none; }
 }

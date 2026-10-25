@@ -103,6 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const dorm = readList("dorm:registrations").find((r) => r.msv === student.msv && r.status === "active");
     const loans = readList("library:loans").filter((l) => l.msv === student.msv && l.status === "borrowing");
     const overdue = loans.filter((l) => todayKey > l.dueDate).length;
+    const loanRequests = readList("library:loans").filter((l) => l.msv === student.msv && l.status === "pending").length;
     const fin = getFinance(student);
     const feedback = readList("feedback:items").filter((f) => f.msv === student.msv);
     const feedbackOpen = feedback.filter((f) => f.status !== "da-giai-quyet").length;
@@ -133,7 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
         key: "thu-vien", icon: "fa-book", color: "#15803d", title: "Thư viện",
         stat: `${loans.length} sách đang mượn`,
         note: loans.length ? loans.map((l) => esc(l.title)).join(", ") : "Tra cứu & mượn sách",
-        alert: overdue ? `${overdue} quyển quá hạn` : "",
+        alert: overdue ? `${overdue} quyển quá hạn` : loanRequests ? `${loanRequests} yêu cầu đang chờ duyệt` : "",
       },
       {
         key: "hoc-phi", icon: "fa-file-invoice-dollar", color: fin.done ? "#16a34a" : "#dc2626", title: "Học phí",
@@ -258,11 +259,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const feedback = readList("feedback:items");
     const open = feedback.filter((x) => x.status !== "da-giai-quyet");
     const urgent = open.filter((x) => x.priority === "khan-cap");
+    const allLoans = readList("library:loans");
+    const loanPending = allLoans.filter((l) => l.status === "pending").length;
+    const loanActive = allLoans.filter((l) => l.status === "borrowing");
 
     hero(user.name, `Tài khoản ${user.id} · ${students.length} sinh viên · ${teachers.length} giảng viên`, [
       `<span class="chip"><i class="fa-solid fa-user-graduate"></i> ${students.length} sinh viên</span>`,
       `<span class="chip ${debtors ? "chip--bad" : "chip--ok"}"><i class="fa-solid fa-wallet"></i> ${debtors} SV còn nợ học phí</span>`,
       open.length ? `<span class="chip chip--warn"><i class="fa-solid fa-inbox"></i> ${open.length} phản hồi cần xử lý</span>` : "",
+      loanPending ? `<span class="chip chip--warn"><i class="fa-solid fa-book"></i> ${loanPending} yêu cầu mượn sách chờ duyệt</span>` : "",
     ]);
 
     // Phản hồi cần xử lý: khẩn cấp trước, rồi mới nhất
@@ -305,6 +310,12 @@ document.addEventListener("DOMContentLoaded", () => {
         stat: `Đã thu ${due ? ((collected / due) * 100).toFixed(1) : 0}%`,
         note: `${mil(collected)} / ${mil(due)} · còn nợ ${mil(sum("debt"))}`,
         alert: debtors ? `${debtors} sinh viên chưa nộp đủ` : "",
+      },
+      {
+        key: "qt-thu-vien", icon: "fa-book", color: "#15803d", title: "Thư viện",
+        stat: `${loanPending} chờ duyệt`,
+        note: `${loanActive.length} sách đang được mượn`,
+        alert: loanPending ? `${loanPending} yêu cầu mượn sách cần duyệt` : "",
       },
     ]);
   }

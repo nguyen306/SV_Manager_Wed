@@ -122,6 +122,23 @@
           <div class="loan-stats" id="loanStats"></div>
 
           <div class="box box--flush">
+            <div class="box__head box__head--soft">
+              <h2><i class="fa-solid fa-hourglass-half"></i> Yêu cầu mượn sách</h2>
+              <span class="box__hint">Thư viện duyệt xong bạn sẽ nhận được thông báo</span>
+            </div>
+            <div class="table-wrap">
+              <table class="loan-table">
+                <thead>
+                  <tr>
+                    <th>STT</th><th>Tên sách</th><th>Ngày gửi</th><th>Trạng thái</th><th>Thao tác / Ghi chú</th>
+                  </tr>
+                </thead>
+                <tbody id="requestBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="box box--flush">
             <div class="box__head">
               <h2><i class="fa-solid fa-book-bookmark"></i> Sách đang mượn</h2>
               <span class="box__hint">Tối đa <b id="loanLimit">5</b> quyển · mỗi quyển gia hạn được 1 lần (+7 ngày)</span>

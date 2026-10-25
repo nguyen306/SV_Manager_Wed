@@ -241,10 +241,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const saveLoans = (list) => storageSet(STORE_KEY, JSON.stringify(list));
   let loans = loadLoans();
 
-  const activeLoansOf = (bookId) => loans.filter((l) => l.bookId === bookId && l.status === "borrowing");
+  // Yêu cầu đang chờ duyệt cũng giữ chỗ quyển sách, để Admin duyệt không bị vượt số lượng trong kho
+  const holdsCopy = (l) => l.status === "borrowing" || l.status === "pending";
+  const activeLoansOf = (bookId) => loans.filter((l) => l.bookId === bookId && holdsCopy(l));
   const available = (book) => Math.max(0, book.total - book.onLoan - activeLoansOf(book.id).length);
   const myLoans = () => loans.filter((l) => l.msv === student.msv);
   const myActive = () => myLoans().filter((l) => l.status === "borrowing");
+  const myPending = () => myLoans().filter((l) => l.status === "pending");
+  const myHolds = () => myLoans().filter(holdsCopy);
   const isOverdue = (loan) => loan.status === "borrowing" && today() > loan.dueDate;
 
   /* ---------- TAB 1: Danh mục sách ---------- */
@@ -263,6 +267,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const q = normalize(query.value.trim());
     const cat = categoryFilter.value;
     const mine = new Set(myActive().map((l) => l.bookId));
+    const pending = new Set(myPending().map((l) => l.bookId));
     const list = BOOKS.filter(
       (b) =>
         (!q || normalize(`${b.title} ${b.author} ${b.category} ${b.tags}`).includes(q)) &&
@@ -281,6 +286,8 @@ document.addEventListener("DOMContentLoaded", () => {
               : `<span class="stock ${left <= 1 ? "stock--low" : "stock--ok"}">Còn ${left} quyển</span>`;
             const btn = mine.has(b.id)
               ? `<button type="button" class="btn-borrow is-mine" disabled><i class="fa-solid fa-check"></i> Bạn đang mượn</button>`
+              : pending.has(b.id)
+              ? `<button type="button" class="btn-borrow is-pending" disabled><i class="fa-solid fa-hourglass-half"></i> Đang chờ duyệt</button>`
               : `<button type="button" class="btn-borrow" data-borrow="${b.id}" ${left === 0 ? "disabled" : ""}>
                    <i class="fa-solid fa-hand-holding"></i> ${left === 0 ? "Tạm hết" : "Mượn sách"}</button>`;
             return `
@@ -345,36 +352,34 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!btn || btn.disabled) return;
     const book = bookById.get(btn.dataset.borrow);
 
-    if (myActive().length >= MAX_ACTIVE) {
+    if (myHolds().length >= MAX_ACTIVE) {
       openModal({
         warn: true,
         icon: "fa-triangle-exclamation",
         title: "Đã đạt giới hạn mượn",
-        body: `<p>Bạn đang mượn ${MAX_ACTIVE} quyển — mức tối đa cho phép. Vui lòng trả bớt sách trước khi mượn thêm.</p>`,
+        body: `<p>Bạn đang mượn và chờ duyệt tổng cộng ${MAX_ACTIVE} quyển — mức tối đa cho phép. Vui lòng trả bớt sách hoặc hủy yêu cầu trước khi mượn thêm.</p>`,
         actions: `<button type="submit" value="cancel" class="btn btn--ghost">Đóng</button>
                   <button type="submit" value="loans" class="btn btn--primary">Xem sách đang mượn</button>`,
       });
       return;
     }
 
-    const borrowDay = today();
-    const dueDay = addDays(borrowDay, LOAN_DAYS);
     openModal({
-      title: "Xác nhận mượn sách",
-      sub: "Kiểm tra thông tin trước khi xác nhận",
+      title: "Gửi yêu cầu mượn sách",
+      sub: "Yêu cầu sẽ được gửi đến thư viện để duyệt",
       body: `
         <dl class="detail">
           <dt>Tên sách</dt><dd>${esc(book.title)}</dd>
           <dt>Tác giả</dt><dd>${esc(book.author)}</dd>
           <dt>Vị trí</dt><dd>${esc(book.shelf)}</dd>
-          <dt>Ngày mượn</dt><dd>${fmtDay(borrowDay)}</dd>
-          <dt>Hẹn trả</dt><dd class="hl">${fmtDay(dueDay)} (sau ${LOAN_DAYS} ngày)</dd>
+          <dt>Ngày gửi yêu cầu</dt><dd>${fmtDay(today())}</dd>
+          <dt>Thời hạn mượn</dt><dd class="hl">${LOAN_DAYS} ngày kể từ khi được duyệt</dd>
         </dl>
         <p class="modal__section">Thông tin sinh viên</p>
         <dl class="detail">${studentRows()}</dl>
-        <p class="modal__note"><i class="fa-solid fa-circle-info"></i> Mang thẻ sinh viên đến quầy để nhận sách tại ${esc(book.shelf)}.</p>`,
+        <p class="modal__note"><i class="fa-solid fa-circle-info"></i> Bạn sẽ nhận được thông báo khi thư viện duyệt yêu cầu. Sau đó mang thẻ sinh viên đến quầy để nhận sách tại ${esc(book.shelf)}.</p>`,
       actions: `<button type="submit" value="cancel" class="btn btn--ghost">Hủy</button>
-                <button type="submit" value="confirm" class="btn btn--primary"><i class="fa-solid fa-check"></i> Xác nhận mượn</button>`,
+                <button type="submit" value="confirm" class="btn btn--primary"><i class="fa-solid fa-paper-plane"></i> Gửi yêu cầu</button>`,
       onConfirm: () => borrow(book),
     });
   });
@@ -386,10 +391,10 @@ document.addEventListener("DOMContentLoaded", () => {
       refresh();
       return showToast(`"${book.title}" vừa hết, vui lòng chọn sách khác.`, "error");
     }
-    if (myActive().some((l) => l.bookId === book.id)) return showToast("Bạn đang mượn quyển sách này rồi.", "error");
-    if (myActive().length >= MAX_ACTIVE) return showToast(`Bạn chỉ được mượn tối đa ${MAX_ACTIVE} quyển.`, "error");
+    if (myHolds().some((l) => l.bookId === book.id)) return showToast("Bạn đã mượn hoặc đang chờ duyệt quyển sách này.", "error");
+    if (myHolds().length >= MAX_ACTIVE) return showToast(`Bạn chỉ được mượn tối đa ${MAX_ACTIVE} quyển.`, "error");
 
-    const borrowDate = today();
+    // Chỉ tạo yêu cầu; ngày mượn và hạn trả được tính khi Admin duyệt (trang Quản trị > Thư viện)
     const loan = {
       id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
       msv: student.msv,
@@ -397,18 +402,25 @@ document.addEventListener("DOMContentLoaded", () => {
       lop: student.lop,
       bookId: book.id,
       title: book.title,
-      borrowDate,
-      dueDate: addDays(borrowDate, LOAN_DAYS),
+      requestedAt: new Date().toISOString(),
       renewals: 0,
-      status: "borrowing",
+      status: "pending",
     };
     loans.push(loan);
     if (!saveLoans(loans)) {
       loans.pop();
       return showToast("Trình duyệt không cho phép lưu dữ liệu.", "error");
     }
+    pushNotification({
+      to: "admin",
+      type: "info",
+      icon: "fa-book",
+      title: "Yêu cầu mượn sách mới",
+      message: `${toTitleCase(student.hoTen)} (${student.msv}) muốn mượn "${book.title}".`,
+      link: { page: "qt-thu-vien", hash: "pending" },
+    });
     refresh();
-    showToast(`Mượn "${book.title}" thành công! Hạn trả ${fmtDay(loan.dueDate)}.`, "success");
+    showToast(`Đã gửi yêu cầu mượn "${book.title}". Vui lòng chờ thư viện duyệt.`, "success");
     setTimeout(() => {
       activate("loans");
       document.querySelector(`[data-loan="${loan.id}"]`)?.classList.add("is-new");
@@ -431,6 +443,18 @@ document.addEventListener("DOMContentLoaded", () => {
       l.renewals += 1;
     });
     if (loan) showToast(`Đã gia hạn "${loan.title}" đến ${fmtDay(loan.dueDate)}.`, "success");
+  }
+
+  function cancelRequest(id) {
+    loans = loadLoans();
+    const loan = loans.find((l) => l.id === id && l.msv === student.msv && l.status === "pending");
+    if (!loan) {
+      refresh();
+      return showToast("Yêu cầu này đã được thư viện xử lý.", "error");
+    }
+    saveLoans(loans.filter((l) => l !== loan));
+    refresh();
+    showToast(`Đã hủy yêu cầu mượn "${loan.title}".`, "success");
   }
 
   function giveBack(id) {
@@ -462,19 +486,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderLoans() {
     const active = myActive().sort((a, b) => a.dueDate.localeCompare(b.dueDate));
+    const requests = myLoans()
+      .filter((l) => l.status === "pending" || l.status === "rejected")
+      .sort((a, b) => (a.status === b.status ? 0 : a.status === "pending" ? -1 : 1) || b.requestedAt.localeCompare(a.requestedAt));
+    const pendingCount = requests.filter((l) => l.status === "pending").length;
     const returned = myLoans()
       .filter((l) => l.status === "returned")
       .sort((a, b) => b.returnDate.localeCompare(a.returnDate));
     const overdue = active.filter(isOverdue).length;
 
     const count = document.getElementById("loanCount");
-    count.hidden = !active.length;
-    count.textContent = active.length;
+    count.hidden = !active.length && !pendingCount;
+    count.textContent = active.length + pendingCount;
     document.getElementById("loanLimit").textContent = MAX_ACTIVE;
 
     document.getElementById("loanStats").innerHTML = `
       <div class="loan-stat"><i class="fa-solid fa-book-open" style="background:#dbeafe;color:#1d4ed8"></i>
         <div><b>${active.length}/${MAX_ACTIVE}</b><span>Đang mượn</span></div></div>
+      <div class="loan-stat"><i class="fa-solid fa-hourglass-half" style="background:var(--warn-soft);color:var(--warn)"></i>
+        <div><b>${pendingCount}</b><span>Chờ duyệt</span></div></div>
       <div class="loan-stat"><i class="fa-solid fa-triangle-exclamation" style="background:var(--closed-soft);color:var(--closed)"></i>
         <div><b>${overdue}</b><span>Quá hạn</span></div></div>
       <div class="loan-stat"><i class="fa-solid fa-circle-check" style="background:var(--open-soft);color:var(--open)"></i>
@@ -484,6 +514,25 @@ document.addEventListener("DOMContentLoaded", () => {
       const b = bookById.get(l.bookId);
       return `<td class="book-cell"><b>${esc(l.title)}</b><small>${esc(b ? b.shelf : "")}</small></td>`;
     };
+
+    document.getElementById("requestBody").innerHTML = requests.length
+      ? requests
+          .map(
+            (l, i) => `
+            <tr data-loan="${esc(l.id)}">
+              <td>${i + 1}</td>
+              ${bookCell(l)}
+              <td class="date">${fmtDay(dayKey(new Date(l.requestedAt)))}</td>
+              <td>${l.status === "pending"
+                ? '<span class="pill pill--pending"><i class="fa-solid fa-hourglass-half"></i>Chờ duyệt</span>'
+                : '<span class="pill pill--overdue"><i class="fa-solid fa-circle-xmark"></i>Bị từ chối</span>'}</td>
+              <td>${l.status === "pending"
+                ? `<button type="button" class="btn-sm btn-sm--renew" data-cancel="${esc(l.id)}"><i class="fa-solid fa-xmark"></i> Hủy yêu cầu</button>`
+                : `<span class="reject-note">${esc(l.rejectReason || "Thư viện không duyệt yêu cầu này.")}</span>`}</td>
+            </tr>`
+          )
+          .join("")
+      : `<tr><td colspan="5" class="empty-row">Không có yêu cầu nào đang chờ duyệt.</td></tr>`;
 
     document.getElementById("activeBody").innerHTML = active.length
       ? active
@@ -525,6 +574,21 @@ document.addEventListener("DOMContentLoaded", () => {
           .join("")
       : `<tr><td colspan="6" class="empty-row">Chưa có lịch sử trả sách.</td></tr>`;
   }
+
+  document.getElementById("requestBody").addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-cancel]");
+    const loan = btn && loans.find((l) => l.id === btn.dataset.cancel);
+    if (!loan) return;
+    openModal({
+      icon: "fa-xmark",
+      title: "Hủy yêu cầu mượn",
+      sub: loan.title,
+      body: `<p>Bạn có chắc muốn hủy yêu cầu mượn quyển sách này?</p>`,
+      actions: `<button type="submit" value="cancel" class="btn btn--ghost">Không</button>
+                <button type="submit" value="confirm" class="btn btn--primary"><i class="fa-solid fa-check"></i> Hủy yêu cầu</button>`,
+      onConfirm: () => cancelRequest(loan.id),
+    });
+  });
 
   document.getElementById("activeBody").addEventListener("click", (e) => {
     const renewBtn = e.target.closest("[data-renew]");
@@ -583,6 +647,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderLoans();
   }
   window.addEventListener("storage", (e) => { if (e.key === STORE_KEY) refresh(); });
+  window.addEventListener("hashchange", () => activate(location.hash.slice(1)));
 
   refresh();
   activate(location.hash.slice(1));
