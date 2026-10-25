@@ -471,8 +471,14 @@ function renderNotifications() {
           <div class="user__info"><span class="user__name"></span><span class="user__role"></span></div>
           <i class="fa-solid fa-chevron-down user__caret"></i>
         </a>
+        <button type="button" class="icon-btn navbar__logout" aria-label="Đăng xuất" title="Đăng xuất">
+          <i class="fa-solid fa-right-from-bracket"></i></button>
       </div>`;
     navbar.querySelector(".search").addEventListener("submit", (e) => e.preventDefault());
+    // Mobile: chân Sidebar (có nút Đăng xuất) bị ẩn nên đặt nút đăng xuất trên Navbar
+    navbar.querySelector(".navbar__logout").addEventListener("click", () => {
+      if (confirm("Bạn có chắc muốn đăng xuất?")) logout();
+    });
 
     if (user) {
       navbar.querySelector(".user__name").textContent = user.name;
