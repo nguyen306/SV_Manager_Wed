@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quản trị phản hồi | Quản trị</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="../../assets/css/style.css" />
+  <link rel="stylesheet" href="../../assets/css/components.css" />
+  <link rel="stylesheet" href="quan-tri.css" />
+</head>
+<body data-root="../../" data-page="qt-phan-hoi">
+  <div class="app">
+    <aside data-layout="sidebar"></aside>
+    <div class="main">
+      <header data-layout="navbar"></header>
+
+      <main class="content page">
+        <div class="page-head">
+          <div>
+            <h1 class="page-title">QUẢN TRỊ PHẢN HỒI</h1>
+            <p class="page-sub">Toàn bộ góp ý của sinh viên toàn trường · trả lời và trạng thái đồng bộ ngay với trang Phản hồi của sinh viên</p>
+          </div>
+        </div>
+
+        <div class="stats" id="stats"></div>
+
+        <div class="inbox">
+          <section class="box box--flush">
+            <div class="toolbar">
+              <label class="grow">Tìm kiếm
+                <span class="search-box"><i class="fa-solid fa-magnifying-glass"></i>
+                  <input type="search" class="ui-input" id="search" placeholder="Tiêu đề, tên SV, mã SV, mã phiếu..." /></span>
+              </label>
+              <label>Loại <select class="ui-select" id="category"><option value="">Tất cả</option></select></label>
+              <label>Trạng thái <select class="ui-select" id="status"><option value="">Tất cả</option></select></label>
+              <label>Mức độ <select class="ui-select" id="priority"><option value="">Tất cả</option></select></label>
+            </div>
+            <ul class="inbox-list" id="list"></ul>
+          </section>
+
+          <section class="box box--flush inbox-detail" id="detail" aria-live="polite"></section>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="../../data/students.js"></script>
+  <script src="../../assets/js/app.js"></script>
+  <script src="../../assets/js/ui.js"></script>
+  <script src="../../assets/js/feedback-thread.js"></script>
+  <script src="quan-tri.js"></script>
+  <script src="phan-hoi.js"></script>
+</body>
+</html>

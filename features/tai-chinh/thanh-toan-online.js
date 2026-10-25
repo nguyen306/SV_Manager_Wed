@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let fin = getFinance(student);
   let selected = "all"; // "all" = toàn bộ nợ, hoặc số năm (1..4)
-  let method = PAYMENT_METHODS[0];
+  let method = ONLINE_METHODS[0];
 
   // Năm học hiện tại theo ngày hệ thống (năm học bắt đầu tháng 9; Năm 1 = 2025_2026)
   const now = new Date();
@@ -97,14 +97,14 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ---------- Cột phải: cổng QR ---------- */
-  $("methodSelect").innerHTML = PAYMENT_METHODS.map((m) => `<option value="${m.id}">${esc(m.name)}</option>`).join("");
-  $("methodChips").innerHTML = PAYMENT_METHODS.map(
+  $("methodSelect").innerHTML = ONLINE_METHODS.map((m) => `<option value="${m.id}">${esc(m.name)}</option>`).join("");
+  $("methodChips").innerHTML = ONLINE_METHODS.map(
     (m) => `<button type="button" class="method-chip" data-method="${m.id}" style="--chip:${m.color}" aria-pressed="false">
       <i class="fa-solid ${m.icon}"></i>${esc(m.name)}</button>`
   ).join("");
 
   function setMethod(id) {
-    method = PAYMENT_METHODS.find((m) => m.id === id) || PAYMENT_METHODS[0];
+    method = ONLINE_METHODS.find((m) => m.id === id) || ONLINE_METHODS[0];
     $("methodSelect").value = method.id;
     renderGateway();
   }
