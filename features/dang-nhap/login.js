@@ -6,9 +6,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const submitBtn = document.getElementById("submitBtn");
   const toast = document.getElementById("toast");
 
-  // Email sinh viên (vd: nguyen251210934@lms.utc.edu.vn) hoặc mã sinh viên 6–12 chữ số
+  // Mã sinh viên, email sinh viên, hoặc tài khoản giảng viên / admin (chữ, số, dấu . _ -)
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const STUDENT_ID_RE = /^\d{6,12}$/;
+  const USERNAME_RE = /^[\w.-]{3,40}$/;
 
   /* ---------- Thông báo ---------- */
   let toastTimer;
@@ -40,9 +40,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function validateUsername() {
     const value = username.value.trim();
-    if (!value) return setError(username, "Vui lòng nhập email hoặc mã sinh viên."), false;
-    if (!EMAIL_RE.test(value) && !STUDENT_ID_RE.test(value)) {
-      return setError(username, "Email hoặc mã sinh viên không hợp lệ."), false;
+    if (!value) return setError(username, "Vui lòng nhập mã sinh viên, email hoặc tài khoản."), false;
+    if (!EMAIL_RE.test(value) && !USERNAME_RE.test(value)) {
+      return setError(username, "Tài khoản không hợp lệ."), false;
     }
     setError(username, "");
     return true;
@@ -55,12 +55,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Trang cần quay lại sau khi đăng nhập: ?next=<khóa trang trong PAGES>[#tab].
-  // Chỉ nhận khóa đã khai báo (tránh chuyển ra trang ngoài); mặc định về Trang chủ.
-  function nextPage() {
+  // Chỉ nhận khóa đã khai báo và vai trò được phép mở (tránh chuyển ra trang ngoài);
+  // mặc định về trang chủ của vai trò (SV: Trang chủ, GV: Lịch dạy, Admin: Dashboard).
+  function nextPage(role) {
     const [key, hash = ""] = (new URLSearchParams(location.search).get("next") || "").split("#");
-    return PAGES[key] && key !== "dang-nhap" && /^[\w-]*$/.test(hash)
+    return PAGES[key] && PAGES[key].roles.includes(role) && /^[\w-]*$/.test(hash)
       ? pageUrl(key, hash ? `#${hash}` : "")
-      : pageUrl("trang-chu");
+      : homeUrl(role);
   }
 
   username.addEventListener("blur", validateUsername);
@@ -89,19 +90,18 @@ document.addEventListener("DOMContentLoaded", () => {
       // await fetch("/api/auth/login", { method: "POST", headers: { "Content-Type": "application/json" },
       //   body: JSON.stringify({ username: username.value.trim(), password: password.value }) });
       await new Promise((r) => setTimeout(r, 600));
-      if (!findStudent(username.value)) {
-        setError(username, "Không tìm thấy mã sinh viên này trong hệ thống.");
-        throw new Error("not-found");
+      const result = authenticate(username.value, password.value);
+      if (!result.ok) {
+        if (result.reason === "not-found") setError(username, "Không tìm thấy tài khoản này trong hệ thống.");
+        else if (result.reason === "locked") setError(username, "Tài khoản đang bị khóa. Vui lòng liên hệ quản trị viên.");
+        else setError(password, "Mật khẩu không đúng.");
+        throw new Error(result.reason);
       }
-      const student = authenticate(username.value, password.value);
-      if (!student) {
-        setError(password, "Mật khẩu không đúng.");
-        throw new Error("wrong-password");
-      }
-      // Đổi tài khoản: lưu mã SV mới, mọi trang sẽ nạp dữ liệu theo mã này
-      storageSet(SESSION_KEY, student.msv);
-      showToast(`Xin chào ${toTitleCase(student.hoTen)}! Đang chuyển hướng...`, "success");
-      setTimeout(() => (window.location.href = nextPage()), 900);
+      // Lưu tài khoản đăng nhập; mọi trang nhận diện vai trò và nạp dữ liệu theo tài khoản này
+      storageSet(SESSION_KEY, result.user.id);
+      const user = getCurrentUser();
+      showToast(`Xin chào ${user.name} (${ROLES[user.role].label})! Đang chuyển hướng...`, "success");
+      setTimeout(() => (window.location.href = nextPage(user.role)), 900);
     } catch {
       showToast("Đăng nhập thất bại. Vui lòng kiểm tra lại.", "error");
       form.querySelector(".invalid input")?.focus();
