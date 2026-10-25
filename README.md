@@ -29,6 +29,7 @@ python -m http.server 8000
 | Ký túc xá | `features/ky-tuc-xa/` | Đăng ký phòng (10/8/5 người, khu Nam/Nữ), lịch sử đăng ký |
 | Thư viện | `features/thu-vien/` | Giờ mở cửa, chỗ ngồi phòng đọc, tra cứu & mượn / gia hạn / trả sách |
 | Tài chính | `features/tai-chinh/` | `hoc-phi.html` (nợ/thừa, phải nộp/đã nộp, hóa đơn) và `thanh-toan-online.html` (cổng QR minh họa) |
+| Phản hồi | `features/phan-hoi/` | Gửi góp ý (loại, tiêu đề, nội dung, mức độ) và xem lịch sử theo trạng thái |
 
 ## Dữ liệu
 
@@ -49,7 +50,7 @@ python tools/build_tuition.py     # (tùy chọn) tạo lại 3 sheet học phí
 
 `data/books.js` là danh mục sách mẫu cho trang Thư viện.
 
-Đăng ký ký túc xá, mượn sách, thanh toán online và thông tin cập nhật ở Profile được lưu trong
+Đăng ký ký túc xá, mượn sách, thanh toán online, phản hồi và thông tin cập nhật ở Profile được lưu trong
 `localStorage` của trình duyệt (chưa có server).
 
 ## Cấu trúc
@@ -61,7 +62,7 @@ assets/
   css/home.css, js/home.js # Trang chủ
   js/app.js                # phiên đăng nhập, danh sách trang (PAGES), tự vẽ Sidebar + Navbar
 features/                  # mỗi phân hệ một thư mục: <tên>.html + .css + .js
-  dang-nhap/  profile/  hoc-tap/  lich-hoc/  ky-tuc-xa/  thu-vien/  tai-chinh/
+  dang-nhap/  profile/  hoc-tap/  lich-hoc/  ky-tuc-xa/  thu-vien/  tai-chinh/  phan-hoi/
 data/                      # students.xlsx (nguồn), students.js (tự sinh), books.js
 tools/                     # xlsx_to_js.py, build_tuition.py
 ```

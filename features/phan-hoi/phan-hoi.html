@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Phản hồi | Quản lý sinh viên</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="../../assets/css/style.css" />
+  <link rel="stylesheet" href="phan-hoi.css" />
+</head>
+<body data-root="../../" data-page="phan-hoi">
+  <div class="app">
+    <aside data-layout="sidebar"></aside>
+
+    <div class="main">
+      <header data-layout="navbar"></header>
+
+      <main class="content fb">
+        <h1 class="fb-title">PHẢN HỒI &amp; GÓP Ý</h1>
+
+        <!-- Thông tin sinh viên (cố định, lấy từ tài khoản đang đăng nhập) -->
+        <section class="box student-bar" aria-label="Thông tin sinh viên">
+          <img id="stAvatar" src="" alt="" />
+          <dl><dt>Họ và tên</dt><dd id="stName">—</dd></dl>
+          <dl><dt>Mã sinh viên</dt><dd id="stMsv">—</dd></dl>
+          <dl><dt>Lớp</dt><dd id="stClass">—</dd></dl>
+          <div class="stat-chips" id="statChips"></div>
+        </section>
+
+        <div class="fb-grid">
+          <!-- ========== PHẦN 1: FORM GỬI Ý KIẾN ========== -->
+          <section class="box box--flush">
+            <div class="box__head">
+              <h2><i class="fa-solid fa-pen-to-square"></i> Gửi ý kiến mới</h2>
+            </div>
+
+            <form class="fb-form" id="fbForm" novalidate>
+              <div class="field">
+                <label for="category">Loại phản hồi <span class="req">*</span></label>
+                <div class="input-icon">
+                  <i class="fa-solid fa-layer-group"></i>
+                  <select id="category" name="category" required>
+                    <option value="">-- Chọn loại phản hồi --</option>
+                  </select>
+                </div>
+                <small class="error" id="categoryError"></small>
+              </div>
+
+              <div class="field">
+                <label for="title">Tiêu đề <span class="req">*</span></label>
+                <div class="input-icon">
+                  <i class="fa-solid fa-heading"></i>
+                  <input type="text" id="title" name="title" maxlength="120"
+                         placeholder="VD: Máy chiếu phòng 304 không hoạt động" required />
+                </div>
+                <small class="error" id="titleError"></small>
+              </div>
+
+              <div class="field">
+                <label for="content">Nội dung chi tiết <span class="req">*</span></label>
+                <textarea id="content" name="content" rows="6" maxlength="2000"
+                          placeholder="Mô tả cụ thể vấn đề, thời gian, địa điểm và đề xuất của bạn (tối thiểu 20 ký tự)..." required></textarea>
+                <div class="field__foot">
+                  <small class="error" id="contentError"></small>
+                  <small class="counter" id="counter">0/2000</small>
+                </div>
+              </div>
+
+              <fieldset class="field">
+                <legend>Mức độ</legend>
+                <div class="priority" id="priorityGroup"></div>
+              </fieldset>
+
+              <div class="form-actions">
+                <button type="reset" class="btn btn--ghost"><i class="fa-solid fa-rotate-left"></i> Nhập lại</button>
+                <button type="submit" class="btn btn--primary" id="submitBtn"><i class="fa-solid fa-paper-plane"></i> Gửi phản hồi</button>
+              </div>
+            </form>
+          </section>
+
+          <!-- ========== PHẦN 2: LỊCH SỬ PHẢN HỒI ========== -->
+          <section class="box box--flush">
+            <div class="box__head">
+              <h2><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử phản hồi</h2>
+              <span class="count-badge" id="historyCount">0</span>
+            </div>
+            <div class="filter" role="radiogroup" aria-label="Lọc theo trạng thái" id="statusFilter"></div>
+            <ul class="history" id="historyList" aria-live="polite"></ul>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="../../data/students.js"></script>
+  <script src="../../assets/js/app.js"></script>
+  <script src="phan-hoi.js"></script>
+</body>
+</html>
