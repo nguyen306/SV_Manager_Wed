@@ -10,7 +10,10 @@ const PAYMENT_METHODS = [
   { id: "vnpay", name: "VNPay", icon: "fa-credit-card", color: "#1d4ed8" },
   { id: "momo", name: "MoMo", icon: "fa-wallet", color: "#be185d" },
   { id: "vcb", name: "Vietcombank", icon: "fa-building-columns", color: "#15803d" },
+  // Nộp trực tiếp, do Admin ghi nhận ở trang Quản lý tài chính (không hiện ở cổng thanh toán online)
+  { id: "admin", name: "Nộp tại phòng Tài chính", icon: "fa-cash-register", color: "#0b3d91", online: false },
 ];
+const ONLINE_METHODS = PAYMENT_METHODS.filter((m) => m.online !== false);
 
 const formatMoney = (n) => `${Math.round(n || 0).toLocaleString("vi-VN")} đ`;
 const schoolYearLabel = (row) => `Năm ${row.year} (${row.schoolYear})`;
