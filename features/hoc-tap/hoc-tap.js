@@ -137,7 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <section class="box box--flush semester">
           <div class="semester__head">${yearLabel(y)}<span>Năm ${y} · ${list.length} học phần</span></div>
           <div class="table-wrap">
-            <table class="data-table">
+            <table class="data-table grade-table">
               <thead><tr>
                 <th>STT</th><th class="text-left">Tên học phần</th><th>Số tín chỉ</th>
                 <th>Điểm hệ 10</th><th>Điểm hệ 4</th><th>Điểm chữ</th>
@@ -147,15 +147,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 .map(
                   (r, i) => `
                 <tr>
-                  <td>${i + 1}</td>
-                  <td class="text-left">${esc(r.subject.name)}</td>
-                  <td>${r.subject.credits}</td>
-                  <td class="score">${fmt(r.h10, 1)}</td>
-                  <td class="score">${fmt(r.h4, 1)}</td>
-                  <td><b>${r.letter}</b></td>
-                  <td>${passPill(r)}</td>
-                  <td>${noteOf(r)}</td>
-                  <td>${detailBtn(r.subject.name)}</td>
+                  <td class="c-stt">${i + 1}</td>
+                  <td class="text-left c-name">${esc(r.subject.name)}</td>
+                  <td class="c-tc" data-label="Tín chỉ">${r.subject.credits}</td>
+                  <td class="score c-h10" data-label="Hệ 10">${fmt(r.h10, 1)}</td>
+                  <td class="score c-h4" data-label="Hệ 4">${fmt(r.h4, 1)}</td>
+                  <td class="c-letter" data-label="Điểm chữ"><b>${r.letter}</b></td>
+                  <td class="c-eval">${passPill(r)}</td>
+                  <td class="c-note">${noteOf(r)}</td>
+                  <td class="c-detail">${detailBtn(r.subject.name)}</td>
                 </tr>`
                 )
                 .join("")}</tbody>
