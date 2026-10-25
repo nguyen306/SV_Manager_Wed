@@ -9,7 +9,8 @@
   <link rel="stylesheet" href="assets/css/home.css" />
 </head>
 <!-- FILE TỔNG: mở file này để chạy toàn bộ hệ thống.
-     Chưa đăng nhập sẽ tự chuyển sang features/dang-nhap/login.html. -->
+     Chưa đăng nhập sẽ tự chuyển sang features/dang-nhap/login.html.
+     Đã đăng nhập: nội dung hiển thị theo vai trò (Sinh viên / Giảng viên / Quản trị viên). -->
 <body data-root="" data-page="trang-chu">
   <div class="app">
     <aside data-layout="sidebar"></aside>
@@ -19,17 +20,23 @@
 
       <main class="content home">
         <!-- Lời chào -->
-        <section class="hero">
+        <section class="hero" id="hero">
           <div>
-            <p class="hero__date" id="today">—</p>
+            <p class="hero__date"><span class="hero__role" id="heroRole">—</span> <span id="today">—</span></p>
             <h1 class="hero__title">Xin chào, <span id="heroName">—</span></h1>
             <p class="hero__sub" id="heroSub">—</p>
           </div>
           <div class="hero__chips" id="heroChips"></div>
         </section>
 
+        <!-- Hôm nay / Cần xử lý (giảng viên, quản trị viên) -->
+        <section class="box-panel" id="homePanel" hidden>
+          <div class="box-panel__head"><h2 id="panelTitle"></h2><a id="panelLink" href="#"></a></div>
+          <ul class="agenda" id="panelList"></ul>
+        </section>
+
         <!-- Các phân hệ -->
-        <h2 class="home-label">Các phân hệ</h2>
+        <h2 class="home-label" id="featureLabel">Các phân hệ</h2>
         <div class="feature-grid" id="featureGrid"></div>
       </main>
     </div>

@@ -16,14 +16,15 @@ const DEMO_PASSWORD = "123";
 
 /* ---------- Vai trò ---------- */
 const ROLES = {
+  // Mọi vai trò đều về Trang chủ (index.html); trang chủ hiển thị theo vai trò của tài khoản
   student: { label: "Sinh viên", home: "trang-chu", color: "#4f46e5" },
-  teacher: { label: "Giảng viên", home: "gv-lich-day", color: "#0e7490" },
-  admin: { label: "Quản trị viên", home: "qt-dashboard", color: "#b91c1c" },
+  teacher: { label: "Giảng viên", home: "trang-chu", color: "#0e7490" },
+  admin: { label: "Quản trị viên", home: "trang-chu", color: "#b91c1c" },
 };
 
 /* ---------- Danh sách trang: đường dẫn + vai trò được phép mở ---------- */
 const PAGES = {
-  "trang-chu": { path: "index.html", roles: ["student"], label: "Trang chủ" },
+  "trang-chu": { path: "index.html", roles: ["student", "teacher", "admin"], label: "Trang chủ" },
   "dang-nhap": { path: "features/dang-nhap/login.html", roles: [], label: "Đăng nhập" },
   profile: { path: "features/profile/profile.html", roles: ["student"], label: "Profile" },
   "hoc-tap": { path: "features/hoc-tap/hoc-tap.html", roles: ["student"], label: "Học tập" },
@@ -59,6 +60,7 @@ const MENUS = {
     { key: "phan-hoi", label: "Phản hồi", icon: "fa-comments" },
   ],
   teacher: [
+    { key: "trang-chu", label: "Trang chủ", icon: "fa-house" },
     { key: "gv-lich-day", label: "Lịch dạy", icon: "fa-calendar-week" },
     { key: "gv-dang-ky-phong", label: "Đăng ký phòng", icon: "fa-door-open" },
     { key: "gv-lop-hoc-phan", label: "Lớp học phần", icon: "fa-chalkboard-user" },
@@ -66,6 +68,7 @@ const MENUS = {
     { key: "gv-hoc-vu", label: "Học vụ", icon: "fa-comments" },
   ],
   admin: [
+    { key: "trang-chu", label: "Trang chủ", icon: "fa-house" },
     { key: "qt-dashboard", label: "Dashboard", icon: "fa-chart-pie" },
     { key: "qt-tai-khoan", label: "Tài khoản", icon: "fa-users-gear" },
     { key: "qt-phan-hoi", label: "Phản hồi", icon: "fa-inbox" },
@@ -209,7 +212,7 @@ function getCurrentStudent() {
   return user && user.role === "student" ? user.student : null;
 }
 
-// Trang chủ của vai trò (Trang chủ SV / Lịch dạy GV / Dashboard Admin)
+// Trang chủ của vai trò (index.html, nội dung hiển thị theo vai trò)
 function homeUrl(role) {
   return pageUrl((ROLES[role] || ROLES.student).home);
 }
