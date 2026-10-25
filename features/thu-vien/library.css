@@ -422,6 +422,7 @@
 .btn-borrow:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(11, 61, 145, 0.3); }
 .btn-borrow:disabled { background: #e2e8f0; color: #64748b; cursor: not-allowed; }
 .btn-borrow.is-mine:disabled { background: var(--open-soft); color: var(--open); }
+.btn-borrow.is-pending:disabled { background: var(--warn-soft); color: var(--warn); }
 
 .empty { padding: 36px 16px 20px; text-align: center; color: var(--muted); }
 .empty i { font-size: 38px; color: #c7d2fe; margin-bottom: 10px; }
@@ -505,6 +506,8 @@
 .pill--overdue { background: var(--closed-soft); color: var(--closed); }
 .pill--returned { background: var(--open-soft); color: var(--open); }
 .pill--late { background: var(--warn-soft); color: var(--warn); }
+.pill--pending { background: var(--warn-soft); color: var(--warn); }
+.reject-note { font-size: 12.5px; color: var(--closed); }
 
 .actions { display: flex; gap: 6px; flex-wrap: wrap; }
 .btn-sm {

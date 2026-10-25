@@ -35,11 +35,11 @@ tương ứng. Mở trang không thuộc vai trò sẽ tự quay về Trang ch�
 | Học tập | `features/hoc-tap/` | Bảng điểm theo năm, điểm hệ 10/hệ 4, xếp loại học lực, học phần nợ, chương trình học |
 | Lịch học | `features/lich-hoc/` | Thời khóa biểu theo tuần, tự thêm lịch phụ đạo tối cho môn điểm < 2.0 |
 | Ký túc xá | `features/ky-tuc-xa/` | Đăng ký phòng (10/8/5 người, khu Nam/Nữ), lịch sử đăng ký |
-| Thư viện | `features/thu-vien/` | Giờ mở cửa, chỗ ngồi phòng đọc, tra cứu & mượn / gia hạn / trả sách |
+| Thư viện | `features/thu-vien/` | Giờ mở cửa, chỗ ngồi phòng đọc, tra cứu & gửi yêu cầu mượn (chờ Admin duyệt) / gia hạn / trả sách |
 | Tài chính | `features/tai-chinh/` | `hoc-phi.html` (nợ/thừa, phải nộp/đã nộp, hóa đơn) và `thanh-toan-online.html` (cổng QR minh họa) |
 | Phản hồi | `features/phan-hoi/` | Gửi góp ý (loại, môn học, tiêu đề, nội dung, mức độ), xem trạng thái và trả lời của GV / Admin |
 | **Giảng viên** | `features/giang-vien/` | `lich-day` (lịch tuần), `dang-ky-phong` (phòng & ca dạy), `lop-hoc-phan` (nhập điểm GK/CK), `ren-luyen` (chấm điểm rèn luyện), `hoc-vu` (trả lời câu hỏi học vụ) |
-| **Quản trị** | `features/quan-tri/` | `dashboard` (thống kê, biểu đồ), `tai-khoan` (tài khoản & phân quyền), `phan-hoi` (xử lý góp ý toàn trường), `tai-chinh` (đã/chưa nộp đủ, ghi nhận nộp bổ sung) |
+| **Quản trị** | `features/quan-tri/` | `dashboard` (thống kê, biểu đồ), `tai-khoan` (tài khoản & phân quyền), `phan-hoi` (xử lý góp ý toàn trường), `tai-chinh` (đã/chưa nộp đủ, ghi nhận nộp bổ sung), `thu-vien` (duyệt / từ chối yêu cầu mượn sách) |
 
 ## Dữ liệu
 
@@ -71,8 +71,10 @@ giữa các vai trò:
 | `course:grades` | Điểm giữa kỳ / cuối kỳ | Giảng viên → SV (Chi tiết học phần) |
 | `room:bookings` | Đăng ký phòng & ca dạy | Giảng viên |
 | `tuition:payments` | Thanh toán online + nộp bổ sung tại phòng Tài chính | SV / Admin → Học phí |
+| `library:loans` | Mượn sách: SV gửi yêu cầu (`pending`) → Admin duyệt (`borrowing`) hoặc từ chối (`rejected`) | SV ↔ Admin |
+| `notifications:items` | Thông báo trên chuông Navbar + popup (gửi theo mã SV hoặc vai trò) | SV ↔ Admin |
 
-Ngoài ra: đăng ký KTX, mượn sách, cập nhật Profile. Phân công mẫu của `giangvien`: 3 môn (Lập trình hướng
+Ngoài ra: đăng ký KTX, cập nhật Profile. Phân công mẫu của `giangvien`: 3 môn (Lập trình hướng
 đối tượng, Cấu trúc dữ liệu và giải thuật, Lập trình Web) × 4 lớp, lịch lấy từ thời khóa biểu trong Excel.
 Danh sách phòng học và tỉ trọng điểm (30% giữa kỳ + 70% cuối kỳ) là dữ liệu mẫu.
 
