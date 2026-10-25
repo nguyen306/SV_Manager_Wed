@@ -254,6 +254,13 @@ a { text-decoration: none; color: inherit; }
 .user__role { font-size: 12px; color: var(--muted); }
 .user__caret { font-size: 12px; color: var(--muted); }
 
+/* Nút đăng xuất trên Navbar: chỉ dùng ở mobile (sidebar thành thanh dưới đáy, không còn chân Sidebar) */
+.navbar__logout { display: none; }
+.navbar__logout:hover { background: #fee2e2; color: #dc2626; }
+@media (max-width: 600px) {
+  .navbar__logout { display: grid; }
+}
+
 /* ========== NỘI DUNG (GRID) ========== */
 .content { padding: 28px; }
 .content h1 { font-size: 24px; margin-bottom: 20px; }

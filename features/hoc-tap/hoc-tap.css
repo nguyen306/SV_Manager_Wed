@@ -353,7 +353,69 @@
 .detail-list dd { font-weight: 600; }
 
 /* ---------- Responsive ---------- */
+/* Tablet / mobile: 1 cột — thông tin SV ở trên, các khối bảng điểm theo năm xuống dưới, rộng hết màn hình */
+@media (max-width: 900px) {
+  .study-grid { grid-template-columns: minmax(0, 1fr); }
+  .study-side { position: static; }
+}
+
 @media (max-width: 600px) {
+  .study { font-size: 15px; }
+  .box__title { font-size: 14px; }
+  .student-card h2 { font-size: 16px; }
+  .kv div { grid-template-columns: 96px 1fr; font-size: 14px; }
+  .qg__code { font-size: 12px; }
+  .qg__name { font-size: 14.5px; }
+  .qg__score b { font-size: 17px; }
+  .qg__score small { font-size: 12px; }
+  .summary-table { font-size: 14.5px; }
+  .summary-table td { padding: 9px 4px; }
+  .study-tabs button { font-size: 14px; padding: 9px 14px; }
+
+  .semester__head { font-size: 16px; padding: 12px 16px; }
+  .semester__head span { font-size: 13px; }
+  .semester__sum div { padding: 11px 16px; font-size: 14.5px; }
+
+  /* Bảng điểm từng năm: mỗi học phần thành một thẻ, không phải kéo ngang */
+  .grade-table thead { display: none; }
+  .grade-table, .grade-table tbody { display: block; }
+  .grade-table tr {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-areas:
+      "name name name detail"
+      "tc   h10  h4   letter"
+      "eval note note note";
+    gap: 10px 8px;
+    padding: 14px 16px;
+    border-bottom: 1px solid #e6ebf4;
+  }
+  .grade-table tbody tr:nth-child(even) td,
+  .grade-table tbody tr:hover td { background: transparent; }
+  .grade-table tbody tr:nth-child(even) { background: var(--stripe); }
+  .grade-table td { padding: 0; border: none; text-align: left; }
+  .grade-table .c-stt { display: none; }
+  .grade-table .c-name { grid-area: name; align-self: center; min-width: 0; font-size: 15.5px; font-weight: 700; color: var(--text); }
+  .grade-table .c-detail { grid-area: detail; justify-self: end; }
+  .grade-table .c-tc { grid-area: tc; }
+  .grade-table .c-h10 { grid-area: h10; }
+  .grade-table .c-h4 { grid-area: h4; }
+  .grade-table .c-letter { grid-area: letter; }
+  .grade-table .c-eval { grid-area: eval; }
+  .grade-table .c-note { grid-area: note; align-self: center; font-size: 13.5px; }
+  .grade-table .c-note:empty { display: none; }
+  .grade-table [data-label] { font-size: 17px; font-weight: 700; }
+  .grade-table [data-label]::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 2px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .grade-table .pill { font-size: 12.5px; padding: 3px 12px; }
+  .btn-detail { width: 36px; height: 36px; }
+
   .study-tabs { flex-wrap: nowrap; overflow-x: auto; }
   .semester__sum { grid-template-columns: 1fr; }
   .semester__head { flex-direction: column; align-items: flex-start; gap: 2px; }
