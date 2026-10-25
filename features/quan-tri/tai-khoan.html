@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tài khoản & phân quyền | Quản trị</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="../../assets/css/style.css" />
+  <link rel="stylesheet" href="../../assets/css/components.css" />
+  <link rel="stylesheet" href="quan-tri.css" />
+</head>
+<body data-root="../../" data-page="qt-tai-khoan">
+  <div class="app">
+    <aside data-layout="sidebar"></aside>
+    <div class="main">
+      <header data-layout="navbar"></header>
+
+      <main class="content page">
+        <div class="page-head">
+          <div>
+            <h1 class="page-title">QUẢN LÝ TÀI KHOẢN &amp; PHÂN QUYỀN</h1>
+            <p class="page-sub">Thay đổi lưu trên trình duyệt này, ghi đè lên dữ liệu gốc trong file Excel</p>
+          </div>
+        </div>
+
+        <nav class="seg" role="tablist" id="tabs">
+          <button role="tab" data-tab="students" aria-selected="true"><i class="fa-solid fa-user-graduate"></i> Sinh viên <span class="count" id="cntStudents">0</span></button>
+          <button role="tab" data-tab="staff" aria-selected="false"><i class="fa-solid fa-id-badge"></i> Giảng viên &amp; Quản trị <span class="count" id="cntStaff">0</span></button>
+          <button role="tab" data-tab="roles" aria-selected="false"><i class="fa-solid fa-shield-halved"></i> Phân quyền</button>
+        </nav>
+
+        <!-- Sinh viên -->
+        <section class="box box--flush" data-panel="students">
+          <div class="toolbar">
+            <label class="grow">Tìm kiếm
+              <span class="search-box"><i class="fa-solid fa-magnifying-glass"></i>
+                <input type="search" class="ui-input" id="stSearch" placeholder="Mã SV, họ tên, email..." /></span>
+            </label>
+            <label>Lớp <select class="ui-select" id="stClass"><option value="">Tất cả lớp</option></select></label>
+            <label>Trạng thái
+              <select class="ui-select" id="stStatus">
+                <option value="">Tất cả</option><option value="active">Hoạt động</option>
+                <option value="locked">Bị khóa</option><option value="changed">Đã sửa / thêm mới</option>
+              </select>
+            </label>
+            <button type="button" class="btn btn--primary" id="addStudent"><i class="fa-solid fa-user-plus"></i> Thêm sinh viên</button>
+          </div>
+          <div class="table-wrap">
+            <table class="tbl">
+              <thead><tr><th>Mã SV</th><th>Họ và tên</th><th>Lớp</th><th>Email</th><th>SĐT</th><th>Nguồn</th><th>Trạng thái</th><th class="num">Thao tác</th></tr></thead>
+              <tbody id="stBody"></tbody>
+            </table>
+          </div>
+          <div class="pager" id="stPager"></div>
+        </section>
+
+        <!-- Cán bộ -->
+        <section class="box box--flush" data-panel="staff" hidden>
+          <div class="toolbar">
+            <label class="grow">Tìm kiếm
+              <span class="search-box"><i class="fa-solid fa-magnifying-glass"></i>
+                <input type="search" class="ui-input" id="sfSearch" placeholder="Tài khoản, họ tên..." /></span>
+            </label>
+            <label>Vai trò <select class="ui-select" id="sfRole"><option value="">Tất cả</option><option value="teacher">Giảng viên</option><option value="admin">Quản trị viên</option></select></label>
+            <button type="button" class="btn btn--primary" id="addStaff"><i class="fa-solid fa-user-plus"></i> Thêm tài khoản</button>
+          </div>
+          <div class="table-wrap">
+            <table class="tbl">
+              <thead><tr><th>Tài khoản</th><th>Họ và tên</th><th>Vai trò</th><th>Phân công giảng dạy</th><th>Trạng thái</th><th class="num">Thao tác</th></tr></thead>
+              <tbody id="sfBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Phân quyền -->
+        <section class="box box--flush" data-panel="roles" hidden>
+          <div class="box__head box__head--soft"><h2><i class="fa-solid fa-shield-halved"></i> Vai trò &amp; quyền truy cập</h2></div>
+          <div class="role-cards" id="roleCards"></div>
+          <p class="note" style="margin:0 16px 12px"><i class="fa-solid fa-circle-info"></i>
+            Quyền truy cập cấp theo vai trò. Đổi vai trò của tài khoản ở tab "Giảng viên &amp; Quản trị"; khóa tài khoản để chặn đăng nhập.
+            Truy cập trang không thuộc vai trò sẽ tự chuyển về trang chủ của vai trò đó.</p>
+          <div class="table-wrap">
+            <table class="tbl matrix">
+              <thead><tr><th>Trang</th><th class="role">Sinh viên</th><th class="role">Giảng viên</th><th class="role">Quản trị viên</th></tr></thead>
+              <tbody id="matrixBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="../../data/students.js"></script>
+  <script src="../../assets/js/app.js"></script>
+  <script src="../../assets/js/ui.js"></script>
+  <script src="../tai-chinh/finance.js"></script>
+  <script src="quan-tri.js"></script>
+  <script src="tai-khoan.js"></script>
+</body>
+</html>

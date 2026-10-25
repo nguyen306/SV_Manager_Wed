@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard | Quản trị</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="../../assets/css/style.css" />
+  <link rel="stylesheet" href="../../assets/css/components.css" />
+  <link rel="stylesheet" href="quan-tri.css" />
+</head>
+<body data-root="../../" data-page="qt-dashboard">
+  <div class="app">
+    <aside data-layout="sidebar"></aside>
+    <div class="main">
+      <header data-layout="navbar"></header>
+
+      <main class="content page">
+        <div class="page-head">
+          <div>
+            <h1 class="page-title">TỔNG QUAN HỆ THỐNG</h1>
+            <p class="page-sub" id="updated">—</p>
+          </div>
+        </div>
+
+        <div class="stats" id="stats"></div>
+
+        <div class="dash-grid">
+          <section class="box box--flush chart-box">
+            <div class="box__head box__head--soft"><h2><i class="fa-solid fa-users"></i> Số sinh viên theo lớp</h2></div>
+            <div class="box__body" id="chartClass"></div>
+          </section>
+          <section class="box box--flush chart-box">
+            <div class="box__head box__head--soft"><h2><i class="fa-solid fa-sack-dollar"></i> Học phí toàn trường</h2></div>
+            <div class="box__body">
+              <div id="chartTuition"></div>
+              <p class="chart-note" id="tuitionNote"></p>
+            </div>
+          </section>
+          <section class="box box--flush chart-box">
+            <div class="box__head box__head--soft"><h2><i class="fa-solid fa-ranking-star"></i> Xếp loại học lực (theo GPA hệ 4)</h2></div>
+            <div class="box__body" id="chartRank"></div>
+          </section>
+          <section class="box box--flush chart-box">
+            <div class="box__head box__head--soft"><h2><i class="fa-solid fa-comments"></i> Phản hồi theo loại</h2></div>
+            <div class="box__body">
+              <div id="chartFeedback"></div>
+              <p class="chart-note" id="feedbackNote"></p>
+            </div>
+          </section>
+        </div>
+
+        <section class="box box--flush">
+          <div class="box__head">
+            <h2><i class="fa-solid fa-inbox"></i> Phản hồi cần xử lý</h2>
+            <a class="btn btn--ghost btn--sm" id="toFeedback" href="#">Xem tất cả</a>
+          </div>
+          <ul class="mini-list" id="pending"></ul>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="../../data/students.js"></script>
+  <script src="../../assets/js/app.js"></script>
+  <script src="../../assets/js/ui.js"></script>
+  <script src="../tai-chinh/finance.js"></script>
+  <script src="quan-tri.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>

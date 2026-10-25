@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quản lý tài chính | Quản trị</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="../../assets/css/style.css" />
+  <link rel="stylesheet" href="../../assets/css/components.css" />
+  <link rel="stylesheet" href="quan-tri.css" />
+</head>
+<body data-root="../../" data-page="qt-tai-chinh">
+  <div class="app">
+    <aside data-layout="sidebar"></aside>
+    <div class="main">
+      <header data-layout="navbar"></header>
+
+      <main class="content page">
+        <div class="page-head">
+          <div>
+            <h1 class="page-title">QUẢN LÝ TÀI CHÍNH</h1>
+            <p class="page-sub">Học phí theo file Excel + thanh toán online của sinh viên + khoản nộp bổ sung do phòng Tài chính ghi nhận</p>
+          </div>
+        </div>
+
+        <div class="stats" id="stats"></div>
+
+        <nav class="seg" role="tablist" id="tabs">
+          <button role="tab" data-tab="debt" aria-selected="true"><i class="fa-solid fa-triangle-exclamation"></i> Chưa nộp đủ <span class="count" id="cntDebt">0</span></button>
+          <button role="tab" data-tab="done" aria-selected="false"><i class="fa-solid fa-circle-check"></i> Đã nộp đủ <span class="count" id="cntDone">0</span></button>
+        </nav>
+
+        <section class="box box--flush">
+          <div class="toolbar">
+            <label class="grow">Tìm kiếm
+              <span class="search-box"><i class="fa-solid fa-magnifying-glass"></i>
+                <input type="search" class="ui-input" id="search" placeholder="Mã SV hoặc họ tên..." /></span>
+            </label>
+            <label>Lớp <select class="ui-select" id="lop"><option value="">Tất cả lớp</option></select></label>
+            <label>Sắp xếp
+              <select class="ui-select" id="sort">
+                <option value="debt">Nợ nhiều nhất</option><option value="msv">Mã SV</option><option value="name">Họ tên</option>
+              </select>
+            </label>
+          </div>
+          <div class="table-wrap">
+            <table class="tbl">
+              <thead><tr><th>Mã SV</th><th>Họ và tên</th><th>Lớp</th><th class="num">Phải nộp</th><th class="num">Đã nộp</th><th class="num" id="thDebt">Còn nợ</th><th>Trạng thái</th><th class="num">Thao tác</th></tr></thead>
+              <tbody id="body"></tbody>
+              <tfoot id="foot"></tfoot>
+            </table>
+          </div>
+          <div class="pager" id="pager"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="../../data/students.js"></script>
+  <script src="../../assets/js/app.js"></script>
+  <script src="../../assets/js/ui.js"></script>
+  <script src="../tai-chinh/finance.js"></script>
+  <script src="quan-tri.js"></script>
+  <script src="tai-chinh.js"></script>
+</body>
+</html>
