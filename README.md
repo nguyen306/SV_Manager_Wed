@@ -16,20 +16,20 @@ python -m http.server 8000
 
 **Tài khoản đăng nhập** (bản demo, chỉ kiểm tra trên trình duyệt):
 
-| Vai trò | Tài khoản | Mật khẩu | Vào trang |
+| Vai trò | Tài khoản | Mật khẩu | Trang chủ (`index.html`) hiển thị |
 |---|---|---|---|
-| Sinh viên | mã SV (VD `251210934`) hoặc email SV | `123` | Trang chủ sinh viên |
-| Giảng viên | `giangvien` | `1234` | Lịch dạy |
-| Quản trị viên | `admin` | `admin` | Dashboard |
+| Sinh viên | mã SV (VD `251210934`) hoặc email SV | `123` | GPA, lịch học hôm nay, KTX, thư viện, học phí, phản hồi |
+| Giảng viên | `giangvien` | `1234` | Lịch dạy hôm nay, lớp học phần, tiến độ chấm điểm, câu hỏi học vụ chờ |
+| Quản trị viên | `admin` | `admin` | Phản hồi cần xử lý, tài khoản, tài chính toàn trường |
 
-Sau khi đăng nhập, hệ thống nhận diện vai trò và hiển thị Sidebar tương ứng; mở trang không thuộc
-vai trò sẽ tự chuyển về trang chủ của vai trò đó. Admin có thể thêm / sửa / khóa / xóa tài khoản.
+Mọi tài khoản đều vào cùng `index.html`; hệ thống nhận diện vai trò và hiển thị Trang chủ + Sidebar
+tương ứng. Mở trang không thuộc vai trò sẽ tự quay về Trang chủ. Admin có thể thêm / sửa / khóa / xóa tài khoản.
 
 ## Các trang
 
 | Phân hệ | Thư mục / file | Nội dung |
 |---|---|---|
-| Trang chủ | `index.html` | **File tổng**: tóm tắt từng phân hệ (GPA, lịch hôm nay, phòng KTX, sách đang mượn, học phí) |
+| Trang chủ | `index.html` | **File tổng**, hiển thị theo vai trò: tóm tắt và lối vào từng phân hệ của Sinh viên / Giảng viên / Quản trị viên |
 | Đăng nhập | `features/dang-nhap/` | Đăng nhập bằng mã SV / email, quay lại đúng trang đang mở |
 | Profile | `features/profile/` | Thông tin cá nhân, đổi ảnh đại diện, cập nhật SĐT & tài khoản ngân hàng |
 | Học tập | `features/hoc-tap/` | Bảng điểm theo năm, điểm hệ 10/hệ 4, xếp loại học lực, học phần nợ, chương trình học |
@@ -79,7 +79,7 @@ Danh sách phòng học và tỉ trọng điểm (30% giữa kỳ + 70% cuối k
 ## Cấu trúc
 
 ```
-index.html                 # FILE TỔNG - Trang chủ, chạy toàn bộ hệ thống
+index.html                 # FILE TỔNG - Trang chủ theo vai trò, chạy toàn bộ hệ thống
 assets/
   css/style.css            # giao diện chung (Sidebar, Navbar, layout, responsive)
   css/components.css       # thành phần dùng chung: bảng, nút, form, popup, hộp thư phản hồi
