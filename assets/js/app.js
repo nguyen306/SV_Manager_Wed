@@ -45,6 +45,7 @@ const PAGES = {
   "qt-tai-khoan": { path: "features/quan-tri/tai-khoan.html", roles: ["admin"], label: "Tài khoản & phân quyền" },
   "qt-phan-hoi": { path: "features/quan-tri/phan-hoi.html", roles: ["admin"], label: "Quản trị phản hồi" },
   "qt-tai-chinh": { path: "features/quan-tri/tai-chinh.html", roles: ["admin"], label: "Quản lý tài chính" },
+  "qt-thu-vien": { path: "features/quan-tri/thu-vien.html", roles: ["admin"], label: "Duyệt mượn sách" },
 };
 
 // Menu bên trái theo vai trò (key trùng PAGES; "also": các trang con cũng tô sáng mục này)
@@ -73,6 +74,7 @@ const MENUS = {
     { key: "qt-tai-khoan", label: "Tài khoản", icon: "fa-users-gear" },
     { key: "qt-phan-hoi", label: "Phản hồi", icon: "fa-inbox" },
     { key: "qt-tai-chinh", label: "Tài chính", icon: "fa-sack-dollar" },
+    { key: "qt-thu-vien", label: "Thư viện", icon: "fa-book" },
   ],
 };
 
@@ -104,6 +106,33 @@ function readJSON(key, fallback) {
 }
 function writeJSON(key, value) {
   return storageSet(key, JSON.stringify(value));
+}
+
+/* ---------- Thông báo (chuông trên Navbar) ----------
+   Lưu chung trong localStorage (NOTIFY_KEY) nên tài khoản khác trên cùng trình duyệt nhận được ngay.
+   { id, to: "admin" | "teacher" | <mã SV>, title, message, icon, type: "info"|"success"|"error",
+     link: { page, hash }, at, read, shown }  — shown: đã bật popup lần đầu hay chưa */
+const NOTIFY_KEY = "notifications:items";
+const NOTIFY_MAX = 200;
+
+function loadNotifications() {
+  const list = readJSON(NOTIFY_KEY, []);
+  return Array.isArray(list) ? list : [];
+}
+function pushNotification(n) {
+  const item = {
+    id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    at: new Date().toISOString(), read: false, shown: false, icon: "fa-bell", type: "info", ...n,
+  };
+  return writeJSON(NOTIFY_KEY, [item, ...loadNotifications()].slice(0, NOTIFY_MAX)) ? item : null;
+}
+// Người nhận của tài khoản đang đăng nhập: SV nhận theo mã SV, cán bộ nhận theo vai trò
+const notifyTarget = (user) => (user.role === "student" ? user.id : user.role);
+function updateNotifications(user, change) {
+  const target = notifyTarget(user);
+  const list = loadNotifications();
+  list.forEach((n) => { if (n.to === target) change(n); });
+  writeJSON(NOTIFY_KEY, list);
 }
 
 /* ---------- Kho tài khoản ----------
@@ -293,7 +322,97 @@ if (!IS_LOGIN_PAGE) {
 window.addEventListener("storage", (e) => {
   if (e.key === SESSION_KEY && !IS_LOGIN_PAGE) location.reload();
   if (e.key === ACCOUNTS_KEY) studentsCache = null;
+  if (e.key === NOTIFY_KEY) renderNotifications();
 });
+
+/* ---------- Chuông thông báo + popup ---------- */
+const escapeHtml = (v) =>
+  String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+function timeAgo(iso) {
+  const mins = Math.floor((Date.now() - new Date(iso)) / 60000);
+  if (mins < 1) return "Vừa xong";
+  if (mins < 60) return `${mins} phút trước`;
+  if (mins < 24 * 60) return `${Math.floor(mins / 60)} giờ trước`;
+  const d = new Date(iso);
+  return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`;
+}
+
+function openNotification(n) {
+  updateNotifications(CURRENT_USER, (x) => { if (x.id === n.id) x.read = true; });
+  if (!n.link) return renderNotifications();
+  const url = pageUrl(n.link.page, n.link.hash ? `#${n.link.hash}` : "");
+  if (n.link.page === CURRENT_PAGE) {
+    location.hash = n.link.hash || "";
+    renderNotifications();
+    window.dispatchEvent(new CustomEvent("notification:open", { detail: n }));
+  } else {
+    location.href = url;
+  }
+}
+
+// Popup góc màn hình cho thông báo mới (mỗi thông báo bật một lần)
+function popNotification(n) {
+  let stack = document.getElementById("notifyStack");
+  if (!stack) {
+    stack = document.createElement("div");
+    stack.id = "notifyStack";
+    stack.className = "notify-stack";
+    stack.setAttribute("aria-live", "polite");
+    document.body.appendChild(stack);
+  }
+  const el = document.createElement("div");
+  el.className = `notify-pop notify-pop--${n.type}`;
+  el.setAttribute("role", "status");
+  el.innerHTML = `
+    <span class="notify-pop__icon"><i class="fa-solid ${escapeHtml(n.icon)}"></i></span>
+    <button type="button" class="notify-pop__body">
+      <b>${escapeHtml(n.title)}</b><span>${escapeHtml(n.message)}</span>
+    </button>
+    <button type="button" class="notify-pop__close" aria-label="Đóng thông báo"><i class="fa-solid fa-xmark"></i></button>`;
+  const close = () => {
+    el.classList.add("is-leaving");
+    setTimeout(() => el.remove(), 250);
+  };
+  el.querySelector(".notify-pop__close").addEventListener("click", close);
+  el.querySelector(".notify-pop__body").addEventListener("click", () => { close(); openNotification(n); });
+  stack.appendChild(el);
+  setTimeout(close, 8000);
+}
+
+function renderNotifications() {
+  const user = CURRENT_USER;
+  const bell = document.getElementById("notifyBell");
+  if (!user || !bell) return;
+  const target = notifyTarget(user);
+  const mine = loadNotifications().filter((n) => n.to === target);
+  const unread = mine.filter((n) => !n.read).length;
+
+  const badge = bell.querySelector(".badge");
+  badge.hidden = !unread;
+  badge.textContent = unread > 99 ? "99+" : unread;
+  bell.setAttribute("aria-label", unread ? `Thông báo (${unread} chưa đọc)` : "Thông báo");
+
+  document.getElementById("notifyList").innerHTML = mine.length
+    ? mine
+        .slice(0, 30)
+        .map(
+          (n) => `<li><button type="button" class="notify-item${n.read ? "" : " is-unread"}" data-notify="${escapeHtml(n.id)}">
+              <span class="notify-item__icon notify-item__icon--${escapeHtml(n.type)}"><i class="fa-solid ${escapeHtml(n.icon)}"></i></span>
+              <span class="notify-item__text"><b>${escapeHtml(n.title)}</b><span>${escapeHtml(n.message)}</span>
+                <small>${timeAgo(n.at)}</small></span>
+            </button></li>`
+        )
+        .join("")
+    : `<li class="notify-empty"><i class="fa-regular fa-bell-slash"></i> Chưa có thông báo nào.</li>`;
+  document.getElementById("notifyReadAll").disabled = !unread;
+
+  const fresh = mine.filter((n) => !n.shown);
+  if (fresh.length) {
+    updateNotifications(user, (n) => { n.shown = true; });
+    fresh.slice(0, 3).reverse().forEach(popNotification);
+  }
+}
 
 /* ---------- Vẽ Sidebar + Navbar ----------
    Chạy ngay khi app.js được nạp (app.js đặt cuối <body>), trước script riêng của trang,
@@ -335,7 +454,17 @@ window.addEventListener("storage", (e) => {
         <input type="search" placeholder="Tìm kiếm sinh viên, môn học, tài liệu..." />
       </form>
       <div class="navbar__right">
-        <button class="icon-btn" aria-label="Thông báo"><i class="fa-regular fa-bell"></i><span class="badge">3</span></button>
+        <div class="notify">
+          <button type="button" class="icon-btn" id="notifyBell" aria-label="Thông báo" aria-haspopup="true" aria-expanded="false" aria-controls="notifyPanel">
+            <i class="fa-regular fa-bell"></i><span class="badge" hidden>0</span></button>
+          <div class="notify-panel" id="notifyPanel" hidden>
+            <div class="notify-panel__head">
+              <b>Thông báo</b>
+              <button type="button" class="notify-panel__all" id="notifyReadAll">Đánh dấu đã đọc</button>
+            </div>
+            <ul class="notify-list" id="notifyList"></ul>
+          </div>
+        </div>
         <button class="icon-btn" aria-label="Tin nhắn"><i class="fa-regular fa-envelope"></i></button>
         <a class="user" href="${role === "student" ? pageUrl("profile") : homeUrl(role)}" title="${role === "student" ? "Thông tin cá nhân" : ROLES[role].label}">
           <img src="" alt="Ảnh đại diện" class="user__avatar" />
@@ -351,6 +480,28 @@ window.addEventListener("storage", (e) => {
         role === "student" ? `MSSV: ${user.id}` : `${ROLES[role].label} · ${user.id}`;
       navbar.querySelector(".user__avatar").src =
         (role === "student" && getAvatar(user.id)) || initialsAvatar(user.name, ROLES[role].color);
+
+      const bell = navbar.querySelector("#notifyBell");
+      const panel = navbar.querySelector("#notifyPanel");
+      const toggle = (open) => {
+        panel.hidden = !open;
+        bell.setAttribute("aria-expanded", open);
+      };
+      bell.addEventListener("click", () => toggle(panel.hidden));
+      document.addEventListener("click", (e) => { if (!e.target.closest(".notify")) toggle(false); });
+      document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !panel.hidden) { toggle(false); bell.focus(); } });
+      navbar.querySelector("#notifyReadAll").addEventListener("click", () => {
+        updateNotifications(user, (n) => { n.read = true; });
+        renderNotifications();
+      });
+      navbar.querySelector("#notifyList").addEventListener("click", (e) => {
+        const item = e.target.closest("[data-notify]");
+        const n = item && loadNotifications().find((x) => x.id === item.dataset.notify);
+        if (!n) return;
+        toggle(false);
+        openNotification(n);
+      });
+      renderNotifications();
     }
   }
 })();

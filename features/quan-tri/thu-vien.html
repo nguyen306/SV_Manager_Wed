@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Duyệt mượn sách | Quản trị</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="../../assets/css/style.css" />
+  <link rel="stylesheet" href="../../assets/css/components.css" />
+  <link rel="stylesheet" href="quan-tri.css" />
+</head>
+<body data-root="../../" data-page="qt-thu-vien">
+  <div class="app">
+    <aside data-layout="sidebar"></aside>
+    <div class="main">
+      <header data-layout="navbar"></header>
+
+      <main class="content page">
+        <div class="page-head">
+          <div>
+            <h1 class="page-title">DUYỆT MƯỢN SÁCH</h1>
+            <p class="page-sub">Yêu cầu mượn sách của sinh viên · duyệt hoặc từ chối, sinh viên nhận thông báo ngay trên trang Thư viện</p>
+          </div>
+        </div>
+
+        <div class="stats" id="stats"></div>
+
+        <nav class="seg" role="tablist" id="tabs">
+          <button role="tab" data-tab="pending" aria-selected="true"><i class="fa-solid fa-hourglass-half"></i> Chờ duyệt <span class="count" id="cntPending">0</span></button>
+          <button role="tab" data-tab="borrowing" aria-selected="false"><i class="fa-solid fa-book-open"></i> Đang mượn <span class="count" id="cntBorrowing">0</span></button>
+          <button role="tab" data-tab="history" aria-selected="false"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử <span class="count" id="cntHistory">0</span></button>
+        </nav>
+
+        <section class="box box--flush">
+          <div class="toolbar">
+            <label class="grow">Tìm kiếm
+              <span class="search-box"><i class="fa-solid fa-magnifying-glass"></i>
+                <input type="search" class="ui-input" id="search" placeholder="Mã SV, họ tên, lớp hoặc tên sách..." /></span>
+            </label>
+          </div>
+          <div class="table-wrap">
+            <table class="tbl">
+              <thead id="head"></thead>
+              <tbody id="body"></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="../../data/students.js"></script>
+  <script src="../../data/books.js"></script>
+  <script src="../../assets/js/app.js"></script>
+  <script src="../../assets/js/ui.js"></script>
+  <script src="quan-tri.js"></script>
+  <script src="thu-vien.js"></script>
+</body>
+</html>

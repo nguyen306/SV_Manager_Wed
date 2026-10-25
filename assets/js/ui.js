@@ -8,6 +8,7 @@ const STORE = {
   grades: "course:grades",       // điểm học phần:    { "<môn>|<msv>": {mid, final, by, at} }
   bookings: "room:bookings",     // đăng ký phòng & ca dạy của giảng viên
   payments: "tuition:payments",  // thanh toán học phí (online của SV + nộp bổ sung do Admin ghi nhận)
+  loans: "library:loans",        // mượn sách: SV gửi yêu cầu (pending) -> Admin duyệt (borrowing) / từ chối (rejected)
 };
 
 // Phân loại / mức độ / trạng thái phản hồi
