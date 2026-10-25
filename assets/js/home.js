@@ -39,6 +39,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const loans = readList("library:loans").filter((l) => l.msv === student.msv && l.status === "borrowing");
   const overdue = loans.filter((l) => todayKey > l.dueDate).length;
   const fin = getFinance(student);
+  const feedback = readList("feedback:items").filter((f) => f.msv === student.msv);
+  const feedbackOpen = feedback.filter((f) => f.status !== "da-giai-quyet").length;
 
   /* ---------- Lời chào ---------- */
   document.getElementById("today").textContent =
@@ -89,6 +91,11 @@ document.addEventListener("DOMContentLoaded", () => {
       key: "thanh-toan", icon: "fa-qrcode", color: "#ea580c", title: "Thanh toán online",
       stat: fin.done ? "Không có khoản cần nộp" : "Thanh toán ngay",
       note: "SHB QR · VNPay · MoMo · Vietcombank",
+    },
+    {
+      key: "phan-hoi", icon: "fa-comments", color: "#0891b2", title: "Phản hồi",
+      stat: feedback.length ? `${feedback.length} ý kiến đã gửi` : "Gửi góp ý",
+      note: feedback.length ? `${feedbackOpen} đang chờ giải quyết` : "Cơ sở vật chất, đào tạo, học phí, hệ thống...",
     },
   ];
 
