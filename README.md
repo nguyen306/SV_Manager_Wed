@@ -14,8 +14,16 @@ python -m http.server 8000
 # rồi mở http://localhost:8000/
 ```
 
-**Đăng nhập:** mã sinh viên (VD `251210934`) hoặc email sinh viên, mật khẩu `123`
-(mật khẩu demo dùng chung, chỉ kiểm tra trên trình duyệt).
+**Tài khoản đăng nhập** (bản demo, chỉ kiểm tra trên trình duyệt):
+
+| Vai trò | Tài khoản | Mật khẩu | Vào trang |
+|---|---|---|---|
+| Sinh viên | mã SV (VD `251210934`) hoặc email SV | `123` | Trang chủ sinh viên |
+| Giảng viên | `giangvien` | `1234` | Lịch dạy |
+| Quản trị viên | `admin` | `admin` | Dashboard |
+
+Sau khi đăng nhập, hệ thống nhận diện vai trò và hiển thị Sidebar tương ứng; mở trang không thuộc
+vai trò sẽ tự chuyển về trang chủ của vai trò đó. Admin có thể thêm / sửa / khóa / xóa tài khoản.
 
 ## Các trang
 
@@ -29,7 +37,9 @@ python -m http.server 8000
 | Ký túc xá | `features/ky-tuc-xa/` | Đăng ký phòng (10/8/5 người, khu Nam/Nữ), lịch sử đăng ký |
 | Thư viện | `features/thu-vien/` | Giờ mở cửa, chỗ ngồi phòng đọc, tra cứu & mượn / gia hạn / trả sách |
 | Tài chính | `features/tai-chinh/` | `hoc-phi.html` (nợ/thừa, phải nộp/đã nộp, hóa đơn) và `thanh-toan-online.html` (cổng QR minh họa) |
-| Phản hồi | `features/phan-hoi/` | Gửi góp ý (loại, tiêu đề, nội dung, mức độ) và xem lịch sử theo trạng thái |
+| Phản hồi | `features/phan-hoi/` | Gửi góp ý (loại, môn học, tiêu đề, nội dung, mức độ), xem trạng thái và trả lời của GV / Admin |
+| **Giảng viên** | `features/giang-vien/` | `lich-day` (lịch tuần), `dang-ky-phong` (phòng & ca dạy), `lop-hoc-phan` (nhập điểm GK/CK), `ren-luyen` (chấm điểm rèn luyện), `hoc-vu` (trả lời câu hỏi học vụ) |
+| **Quản trị** | `features/quan-tri/` | `dashboard` (thống kê, biểu đồ), `tai-khoan` (tài khoản & phân quyền), `phan-hoi` (xử lý góp ý toàn trường), `tai-chinh` (đã/chưa nộp đủ, ghi nhận nộp bổ sung) |
 
 ## Dữ liệu
 
@@ -50,8 +60,21 @@ python tools/build_tuition.py     # (tùy chọn) tạo lại 3 sheet học phí
 
 `data/books.js` là danh mục sách mẫu cho trang Thư viện.
 
-Đăng ký ký túc xá, mượn sách, thanh toán online, phản hồi và thông tin cập nhật ở Profile được lưu trong
-`localStorage` của trình duyệt (chưa có server).
+Dữ liệu phát sinh khi sử dụng được lưu trong `localStorage` của trình duyệt (chưa có server) và dùng chung
+giữa các vai trò:
+
+| Khóa | Nội dung | Ghi bởi → Đọc bởi |
+|---|---|---|
+| `accounts:store` | SV thêm/sửa/xóa/khóa, tài khoản cán bộ, phân công giảng dạy | Admin → mọi trang |
+| `feedback:items` | Phản hồi + trao đổi (trả lời, ghi chú nội bộ, đổi trạng thái) | SV ↔ Giảng viên ↔ Admin |
+| `conduct:scores` | Điểm rèn luyện theo năm | Giảng viên → SV (Học tập) |
+| `course:grades` | Điểm giữa kỳ / cuối kỳ | Giảng viên → SV (Chi tiết học phần) |
+| `room:bookings` | Đăng ký phòng & ca dạy | Giảng viên |
+| `tuition:payments` | Thanh toán online + nộp bổ sung tại phòng Tài chính | SV / Admin → Học phí |
+
+Ngoài ra: đăng ký KTX, mượn sách, cập nhật Profile. Phân công mẫu của `giangvien`: 3 môn (Lập trình hướng
+đối tượng, Cấu trúc dữ liệu và giải thuật, Lập trình Web) × 4 lớp, lịch lấy từ thời khóa biểu trong Excel.
+Danh sách phòng học và tỉ trọng điểm (30% giữa kỳ + 70% cuối kỳ) là dữ liệu mẫu.
 
 ## Cấu trúc
 
@@ -59,10 +82,14 @@ python tools/build_tuition.py     # (tùy chọn) tạo lại 3 sheet học phí
 index.html                 # FILE TỔNG - Trang chủ, chạy toàn bộ hệ thống
 assets/
   css/style.css            # giao diện chung (Sidebar, Navbar, layout, responsive)
+  css/components.css       # thành phần dùng chung: bảng, nút, form, popup, hộp thư phản hồi
   css/home.css, js/home.js # Trang chủ
-  js/app.js                # phiên đăng nhập, danh sách trang (PAGES), tự vẽ Sidebar + Navbar
+  js/app.js                # đăng nhập & vai trò, kho tài khoản, PAGES (đường dẫn + quyền), Sidebar + Navbar
+  js/ui.js                 # tiện ích: toast, popup, phân trang, khóa localStorage dùng chung
+  js/feedback-thread.js    # hộp thư phản hồi dùng chung cho Giảng viên và Admin
 features/                  # mỗi phân hệ một thư mục: <tên>.html + .css + .js
-  dang-nhap/  profile/  hoc-tap/  lich-hoc/  ky-tuc-xa/  thu-vien/  tai-chinh/  phan-hoi/
+  dang-nhap/  profile/  hoc-tap/  lich-hoc/  ky-tuc-xa/  thu-vien/  tai-chinh/  phan-hoi/   (sinh viên)
+  giang-vien/  (giảng viên)      quan-tri/  (quản trị viên)
 data/                      # students.xlsx (nguồn), students.js (tự sinh), books.js
 tools/                     # xlsx_to_js.py, build_tuition.py
 ```
@@ -73,5 +100,6 @@ tools/                     # xlsx_to_js.py, build_tuition.py
 2. Trong file HTML: `<body data-root="../../" data-page="<khoa>">`, đặt
    `<aside data-layout="sidebar"></aside>` và `<header data-layout="navbar"></header>`,
    nạp `../../assets/css/style.css`, `../../data/students.js`, `../../assets/js/app.js`.
-3. Khai báo đường dẫn trong `PAGES` (và `MENU` nếu muốn hiện trên Sidebar) ở `assets/js/app.js`.
+3. Khai báo trong `PAGES` ở `assets/js/app.js`: `{ path, roles: ["student" | "teacher" | "admin"], label }`,
+   và thêm vào `MENUS[<vai trò>]` nếu muốn hiện trên Sidebar.
    Liên kết giữa các trang dùng `pageUrl("<khoa>")` để luôn đúng dù trang nằm ở thư mục nào.
