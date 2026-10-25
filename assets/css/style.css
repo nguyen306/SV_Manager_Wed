@@ -59,6 +59,23 @@ a { text-decoration: none; color: inherit; }
 }
 .sidebar__brand i { font-size: 26px; color: #a5b4fc; }
 
+/* Nhãn vai trò (Giảng viên / Quản trị viên) */
+.sidebar__role {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: -8px 0 16px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fde68a;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+.sidebar--teacher { background: #0c3b4a; }
+.sidebar--admin { background: #3b0d16; }
+
 .sidebar__menu {
   display: flex;
   flex-direction: column;
@@ -259,7 +276,9 @@ a { text-decoration: none; color: inherit; }
 @media (max-width: 992px) {
   :root { --sidebar-w: 76px; }
   .sidebar__brand span,
+  .sidebar__role span,
   .menu-item span { display: none; }
+  .sidebar__role { justify-content: center; padding: 8px 0; }
   .sidebar__brand,
   .menu-item { justify-content: center; padding-left: 0; padding-right: 0; }
   .menu-item:hover { transform: none; }
@@ -280,7 +299,7 @@ a { text-decoration: none; color: inherit; }
     flex-direction: row;
     padding: 6px 8px;
   }
-  .sidebar__brand, .sidebar__footer { display: none; }
+  .sidebar__brand, .sidebar__footer, .sidebar__role { display: none; }
   .sidebar__menu { flex-direction: row; overflow-x: auto; gap: 2px; }
   .menu-item { flex: 0 0 52px; }
   .menu-item.active::before { display: none; }
