@@ -166,6 +166,7 @@ a { text-decoration: none; color: inherit; }
   align-items: center;
   gap: 10px;
   flex: 0 1 420px;
+  min-width: 0;
   height: 42px;
   padding: 0 16px;
   background: var(--bg);

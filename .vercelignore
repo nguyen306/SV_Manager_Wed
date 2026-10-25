@@ -1,0 +1,3 @@
+# Không cần khi chạy web: công cụ chuyển Excel -> JS và file Excel gốc (dữ liệu đã có trong data/students.js)
+tools/
+data/*.xlsx
