@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
   yearTabs.innerHTML = years
     .map(
       (y) => `<button type="button" role="tab" data-year="${y}" aria-selected="false">
-        <span>Năm ${y}${y === currentYear ? '<i class="now" title="Năm học hiện tại"></i>' : ""}</span>
+        <span>Năm ${y}</span>
         <small>${schoolYear(y)}</small></button>`
     )
     .join("");
