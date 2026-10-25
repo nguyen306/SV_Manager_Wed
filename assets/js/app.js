@@ -23,6 +23,7 @@ const PAGES = {
   "thu-vien": "features/thu-vien/library.html",
   "hoc-phi": "features/tai-chinh/hoc-phi.html",
   "thanh-toan": "features/tai-chinh/thanh-toan-online.html",
+  "phan-hoi": "features/phan-hoi/phan-hoi.html",
 };
 
 // Menu bên trái (key trùng với PAGES; menu "Học phí" sáng cả khi ở trang Thanh toán online)
@@ -34,7 +35,7 @@ const MENU = [
   { key: "thu-vien", label: "Thư viện", icon: "fa-book" },
   { key: "lich-hoc", label: "Lịch học", icon: "fa-calendar-days" },
   { key: "hoc-phi", label: "Học phí", icon: "fa-wallet", also: ["thanh-toan"] },
-  { key: null, label: "Phản hồi", icon: "fa-comments" },
+  { key: "phan-hoi", label: "Phản hồi", icon: "fa-comments" },
 ];
 
 const ROOT = document.body.dataset.root || "";
