@@ -79,6 +79,21 @@ document.addEventListener("DOMContentLoaded", () => {
       <span><i class="fa-solid ${p.icon}"></i> ${p.label}</span></label>`
   ).join("");
 
+  // Câu hỏi "Đào tạo" có thể chọn môn học -> chuyển tới giảng viên dạy môn đó (trang Học vụ)
+  const subjectField = $("subjectField");
+  const subjectEl = $("subject");
+  (window.SUBJECTS || []).forEach((sub) => {
+    const opt = document.createElement("option");
+    opt.value = sub.name;
+    opt.textContent = `${sub.name} (Năm ${sub.year})`;
+    subjectEl.appendChild(opt);
+  });
+  const toggleSubject = () => {
+    subjectField.hidden = fields.category.value !== "dao-tao";
+    if (subjectField.hidden) subjectEl.value = "";
+  };
+  fields.category.addEventListener("change", toggleSubject);
+
   const rules = {
     category: (v) => (v ? "" : "Vui lòng chọn loại phản hồi."),
     title: (v) =>
@@ -115,6 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
         $(`${key}Error`).textContent = "";
       });
       updateCounter();
+      toggleSubject();
     });
   });
 
@@ -134,6 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
       hoTen: student.hoTen,
       lop: student.lop,
       category: fields.category.value,
+      subject: fields.category.value === "dao-tao" ? subjectEl.value : "",
       title: fields.title.value.trim(),
       content: fields.content.value.trim(),
       priority: form.querySelector('input[name="priority"]:checked').value,
@@ -179,6 +196,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const cat = byId(CATEGORIES, x.category);
             const pri = byId(PRIORITIES, x.priority);
             const st = byId(STATUSES, x.status);
+            // Chỉ hiện trả lời công khai của giảng viên / admin (không hiện ghi chú nội bộ)
+            const replies = (x.thread || []).filter((t) => t.kind === "reply" && !t.internal);
             return `
             <li class="item${x.id === newId ? " is-new" : ""}">
               <details>
@@ -187,16 +206,23 @@ document.addEventListener("DOMContentLoaded", () => {
                   <span class="item__main">
                     <span class="item__title">${esc(x.title)}</span>
                     <span class="item__meta">
-                      <span>${esc(x.code)}</span>·<span>${cat.label}</span>·<span><i class="fa-regular fa-clock"></i> ${fmtTime(x.createdAt)}</span>
+                      <span>${esc(x.code)}</span>·<span>${cat.label}${x.subject ? ` – ${esc(x.subject)}` : ""}</span>·<span><i class="fa-regular fa-clock"></i> ${fmtTime(x.createdAt)}</span>
                     </span>
                   </span>
                   <span class="item__badges">
                     <span class="badge-status badge-status--${st.id}"><i class="fa-solid ${st.icon}"></i> ${st.label}</span>
                     ${pri.id !== "thuong" ? `<span class="badge-pri badge-pri--${pri.id}">${pri.label}</span>` : ""}
+                    ${replies.length ? `<span class="badge-reply"><i class="fa-solid fa-reply"></i> ${replies.length} trả lời</span>` : ""}
                   </span>
                 </summary>
                 <div class="item__body">
                   <p>${esc(x.content).replace(/\n/g, "<br />")}</p>
+                  ${replies.length ? `<ul class="replies">${replies
+                    .map((r) => `<li class="reply reply--${esc(r.role)}">
+                        <div class="reply__who"><i class="fa-solid ${r.role === "admin" ? "fa-user-shield" : "fa-chalkboard-user"}"></i>
+                          <b>${esc(r.byName)}</b><span>${r.role === "admin" ? "Phòng quản trị" : "Giảng viên"}</span><time>${fmtTime(r.at)}</time></div>
+                        <p>${esc(r.text).replace(/\n/g, "<br />")}</p></li>`)
+                    .join("")}</ul>` : ""}
                   <ol class="steps">
                     ${STATUSES.map((s, i) => {
                       const reached = i <= STATUSES.findIndex((z) => z.id === x.status);
